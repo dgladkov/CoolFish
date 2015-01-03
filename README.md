@@ -1,5 +1,11 @@
-﻿--README--
+Now integrated with AppVeyor CI
 
+[![Build status](https://ci.appveyor.com/api/projects/status/sl3g2cl43k742t2e/branch/master?svg=true)](https://ci.appveyor.com/project/unknowndev/coolfish/branch/master)
+
+You can check the history and the latest builds at the project page here:
+<a href="https://ci.appveyor.com/project/unknowndev/coolfish">AppVeyor CoolFish Project Page </a>
+
+<br>
 If you need any assistance with the bot or have comments/bug reports try some of the links below
 
 Website: http://unknowndev.github.io/CoolFish/
