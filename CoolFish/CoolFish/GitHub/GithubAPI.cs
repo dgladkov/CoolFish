@@ -5,16 +5,40 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
+using CoolFishNS.Management;
+using CoolFishNS.Utilities;
 using NLog;
 using Octokit;
 
-namespace CoolFish.GitHub
+namespace CoolFishNS.GitHub
 {
     internal static class GithubAPI
     {
-        internal static GitHubClient Client = new GitHubClient(new ProductHeaderValue("CoolFish"));
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        internal static GitHubClient Client = new GitHubClient(new ProductHeaderValue("CoolFish"));
+
+        internal static Gist CreateGist(string description, string filename, string contents)
+        {
+            try
+            {
+                var gist = new NewGist {Description = description, Public = false};
+                gist.Files.Add(filename, contents);
+                return Client.Gist.Create(gist).Result;
+            }
+            catch (RateLimitExceededException ex)
+            {
+                Logger.Warn("Failed to create gist due to exceeding hourly requests. " + ex.Reset, ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Failed to create Gist", ex);
+            }
+            return null;
+        }
+
         internal static Tuple<int, string> GetLatestVersionInfo()
         {
             int latestId = -1;
@@ -83,6 +107,8 @@ namespace CoolFish.GitHub
             try
             {
                 Logger.Info("Download Complete.");
+                BotManager.DetachFromProcess();
+                App.ShutDown();
                 DeleteOldSetupFiles();
                 ZipFile.ExtractToDirectory(fileName, Constants.ApplicationPath.Value);
                 MessageBox.Show("The update was complete. CoolFish will restart now.");

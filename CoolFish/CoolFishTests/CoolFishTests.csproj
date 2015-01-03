@@ -101,14 +101,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\CoolFish\CoolFish.csproj">
+      <Project>{440ba8ec-0daa-4e57-9ee4-52b2088031ae}</Project>
+      <Name>CoolFish</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CoolFishLib\CoolFishLib.csproj">
-      <Project>{440ba8ec-0daa-4e57-9ee4-52b2088031ae}</Project>
-      <Name>CoolFishLib</Name>
-    </ProjectReference>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
