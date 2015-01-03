@@ -22,6 +22,7 @@ namespace CoolFishNS.Utilities
             new List<NullableKeyValuePair<string, uint, uint>>
             {
                 new NullableKeyValuePair<string, uint, uint>("No Bait", 0, 0),
+                new NullableKeyValuePair<string, uint, uint>("Any Bait", 999999, 999999),
                 new NullableKeyValuePair<string, uint, uint>("Abyssal Gulper Eel Bait", 110293, 158038),
                 new NullableKeyValuePair<string, uint, uint>("Blackwater Whiptail Bait", 110294, 158039),
                 new NullableKeyValuePair<string, uint, uint>("Blind Lake Sturgeon Bait", 110290, 158035),
