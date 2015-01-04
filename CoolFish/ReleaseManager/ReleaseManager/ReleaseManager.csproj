@@ -73,8 +73,7 @@
   <PropertyGroup>
     <PostBuildEvent>cd $(TargetDir)
 del *.zip
-
-ReleaseManager.exe CoolFish.exe CoolFishLib.exe CoolFishLib.pdb CoolFishLib.exe.config DomainWrapper.dll GreyMagic.dll GreyMagic.pdb Nlog.dll AWSSDK.dll Octokit.dll README.html</PostBuildEvent>
+ReleaseManager.exe CoolFish.exe CoolFish.pdb CoolFish.exe.config fasmdll_managed.dll fasmdll_managed.pdb GreyMagic.dll GreyMagic.pdb Nlog.dll Octokit.dll AWSSDK.dll README.html</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

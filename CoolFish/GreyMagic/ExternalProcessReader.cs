@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using Fasm;
 using GreyMagic.Internals;
 using GreyMagic.Native;
 
@@ -22,12 +23,15 @@ namespace GreyMagic
             {
                 ThreadHandle = Imports.OpenThread(0x0001F03FF, false, (uint) proc.Threads[0].Id);
                 WindowHandle = Process.MainWindowHandle;
+                Asm = new ManagedFasm(ProcessHandle.DangerousGetHandle());
             }
             else
             {
                 throw new Exception("ProcessHandle is invalid or closed, are you sure you did everything right?");
             }
         }
+
+        public ManagedFasm Asm { get; private set; }
 
         /// <summary>
         ///     This is not valid in this memory reader type.
@@ -270,6 +274,10 @@ namespace GreyMagic
                 }
 
                 SafeMemoryHandle.CloseHandle(ThreadHandle);
+                if (Asm != null)
+                {
+                    Asm.Dispose();
+                }
                 base.Dispose();
             }
             catch (Exception ex)

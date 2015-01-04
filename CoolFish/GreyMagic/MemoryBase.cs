@@ -203,6 +203,14 @@ namespace GreyMagic
         /// <remarks>Created 2012-02-15</remarks>
         public virtual void Dispose()
         {
+            try
+            {
+                Process.LeaveDebugMode();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.ToString());
+            }
             
         }
 
@@ -219,7 +227,7 @@ namespace GreyMagic
             {
                 throw new AccessViolationException("Process: " + proc.Id + " has already exited. Can not attach to it.");
             }
-
+            Process.EnterDebugMode();
             // Good to set this too if ure using events.
             proc.EnableRaisingEvents = true;
 
