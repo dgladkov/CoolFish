@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using CoolFishNS.RemoteNotification.Payloads;
 using CoolFishNS.Utilities;
 using NLog;
@@ -34,12 +35,28 @@ namespace CoolFishNS.Targets
 
         private void SendPayload(LogLevel level, string message, Exception exception)
         {
+            if (exception == null)
+            {
+                return;
+            }
+            string exceptionType;
+            var stackBuilder = new StringBuilder();
+
+            do
+            {
+                exceptionType = exception.GetType().Name;
+                stackBuilder.AppendLine(exception.Message);
+                stackBuilder.AppendLine(exception.StackTrace);
+                exception = exception.InnerException;
+            } while (exception != null);
+
+
             manager.SendLoggingPayload(new LoggingPayload
             {
-                StackTrace = exception.StackTrace,
+                StackTrace = stackBuilder.ToString(),
                 Message = message,
                 LogLevel = level.Name,
-                ExceptionType = exception.GetType().Name
+                ExceptionType = exceptionType
             });
         }
     }
