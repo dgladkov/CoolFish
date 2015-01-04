@@ -51,7 +51,7 @@ namespace CoolFishTests
             Assert.IsFalse(UserPreferences.Default.CloseWoWOnStop);
             Assert.IsFalse(UserPreferences.Default.ShutdownPcOnStop);
             Assert.IsFalse(UserPreferences.Default.DontLootLeft);
-            Assert.AreEqual(-1, UserPreferences.Default.LootQuality);
+            Assert.AreEqual(1, UserPreferences.Default.LootQuality);
             Assert.IsFalse(UserPreferences.Default.SoundOnWhisper);
             Assert.IsFalse(UserPreferences.Default.UseRumsey);
             Assert.IsFalse(UserPreferences.Default.UseSpear);
