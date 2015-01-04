@@ -77,7 +77,7 @@
                     <CheckBox x:Uid="ShutdownCB" x:Name="ShutdownCB" Content="Shut down PC on Stop" />
                 </ListBox>
                 <ComboBox x:Uid="QualityCMB" x:Name="QualityCMB" HorizontalAlignment="Left" Margin="249,227,0,0"
-                          VerticalAlignment="Top" Width="193" Text="Minimum Loot Quality" Height="26">
+                          VerticalAlignment="Top" Width="193" Text="Minimum Loot Quality" Height="26" SelectedIndex="2">
                     <ListBoxItem x:Name="MinQualityChoice" x:Uid="ListBoxItem_1"
                                  Content="-- Minimum Loot Quality --" />
                     <ListBoxItem x:Name="PoorQualityChoice" x:Uid="ListBoxItem_2" Content="Poor"
@@ -110,7 +110,7 @@
                 <Label x:Name="BaitLBL" Content="Bait" HorizontalAlignment="Left" Margin="10,31,0,0"
                        VerticalAlignment="Top" Width="34" FontWeight="Bold" />
                 <ComboBox x:Name="BaitCMB" HorizontalAlignment="Left" Margin="49,31,0,0" VerticalAlignment="Top"
-                          Width="195" Height="26" />
+                          Width="195" Height="26" SelectedIndex="0"/>
             </Grid>
         </Border>
     </StackPanel>

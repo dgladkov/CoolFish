@@ -14,6 +14,9 @@ local Lures = {
 	[34861] = true,
 	[68049] = true,
 	[118391] = true; -- Worm Supreme
+};
+
+local equipLures = {
 	-- Hats
 	[33820] = true, -- Weather
 	[117405] = true, -- Nat's Drinking Hat
@@ -21,7 +24,7 @@ local Lures = {
 	-- Poles
 	[116826] = true, -- Draenic Fishing Pole
 	[116825] = true -- Savage Fishing Pole
-}
+};
 
 -- Check to see if we have any lures in our inventory
 for i=0,4 do 
@@ -38,7 +41,7 @@ end
 -- Function to find inventory slot lures
 local checkLure = function(slot)
     local ItemID = GetInventoryItemID("player", slot);
-	if Lures[ItemID]   then 
+	if equipLures[ItemID]   then 
 		local start, duration = GetInventoryItemCooldown("player", slot);
 		if start+duration-GetTime() < 0 then 
 			return ItemID;
@@ -48,13 +51,14 @@ local checkLure = function(slot)
 end
 
 -- Check to see if we have any hat or weapon lures
-local headLure = checkLure(1);
 local weaponLure = checkLure(16);
 
 if weaponLure then
 	LureName = GetItemInfo(weaponLure);
 	return;
 end
+
+local headLure = checkLure(1);
 
 if headLure then
 	LureName = GetItemInfo(headLure);

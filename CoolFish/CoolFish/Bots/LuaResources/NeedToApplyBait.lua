@@ -1,10 +1,9 @@
-﻿-- Check to see if the buff has expired already
-AppliedBait = nil;
+﻿AppliedBait = nil;
 if not BaitSpellId or not BaitItemId then
 	return;
 end
 
-if BaitSpellId ~= 999999 then
+if BaitSpellId ~= 1 then
     local name = GetSpellInfo(BaitSpellId);  
     local _,_,_,_,_,_,expires = UnitBuff("player",name); 
     if expires then 
@@ -34,33 +33,36 @@ if BaitSpellId ~= 999999 then
 	    end
     end
 else
-    local baitSpellItemMap = {[158038]=110293, [158039]=110294, [158035]=110290, [158034]=110289, [158036]=110291, [158031]=110274, [158037]=110292};
+
     local baitItemSpellMap = {[110293]=158038, [110294]=158039, [110290]=158035, [110289]=158034, [110291]=158036, [110274]=158031, [110292]=158037};
-    local applyBait = true;
-    for count=1,40 do 
-        local _,_,_,_,_,_,expires,_,_,_,spellID = UnitBuff("player",count);
-        if baitSpellItemMap[spellID] then
-            if expires then 
-	            expires = expires-GetTime();
-	            if expires > 10 then
-    	            applyBait = false
-	            end
-            end
+	-- Check to see if we have any of the bait spell buffs
+	for index, value in pairs(baitItemSpellMap) do 
+	    local name = GetSpellInfo(value);  
+		local _,_,_,_,_,_,expires = UnitBuff("player", name);
+        if expires then 
+	        expires = expires-GetTime();
+			-- If the current hasn't expired yet, just return
+	        if expires > 10 then
+    	        return;
+	        end
         end
-    end
-    if applyBait then
-	    -- Apply the first bait found in our inventory
+	end
+    -- Check to see if we have any baits in our bags
+		local foundBaits = {};
 	    for i=0,4 do 
 		    local numberOfSlots = GetContainerNumSlots(i); 
 		    for j=1,numberOfSlots do 
 			    local itemId = GetContainerItemID(i,j) 
-			    if baitItemSpellMap[itemId] then 
-				       local BaitName = GetItemInfo(itemId);
-				       RunMacroText("/use " .. BaitName);
-				       AppliedBait = 1;
-                       break;
+			    if baitItemSpellMap[itemId] then
+					   table.insert(foundBaits, itemId);
 			    end 
 		    end 
 	    end
-    end
+	-- If we find baits in our bags, pick one at random
+		if table.getn(foundBaits) ~= 0 then
+			local id = foundBaits[math.random(#foundBaits)];
+			local baitName = GetItemInfo(id);
+			RunMacroText("/use " .. baitName);
+			AppliedBait = 1;
+		end
 end

@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolFish", "CoolFish\CoolFish.csproj", "{440BA8EC-0DAA-4E57-9EE4-52B2088031AE}"
 	ProjectSection(ProjectDependencies) = postProject
-		{12B9D9DD-F195-4EDE-818D-43EBF54921CD} = {12B9D9DD-F195-4EDE-818D-43EBF54921CD}
+		{4756CF18-2091-446F-A79D-9E521611DEB5} = {4756CF18-2091-446F-A79D-9E521611DEB5}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoolFishTests", "CoolFishTests\CoolFishTests.csproj", "{D4983991-664A-412E-B364-1D0BADDFD5C4}"
@@ -13,6 +13,9 @@ EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "CoolFishDoc", "Documentation\CoolFishDoc.shfbproj", "{03D608BD-E854-4DE9-9920-A7C35DEA3C74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreyMagic", "GreyMagic\GreyMagic.csproj", "{29BEE34E-8D6A-47BF-96FA-ABA46F6E9B66}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4756CF18-2091-446F-A79D-9E521611DEB5} = {4756CF18-2091-446F-A79D-9E521611DEB5}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fasmdll_managed", "fasmdll_managed\fasmdll_managed.vcxproj", "{4756CF18-2091-446F-A79D-9E521611DEB5}"
 EndProject
@@ -22,6 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReleaseManager", "ReleaseManager\ReleaseManager\ReleaseManager.csproj", "{12B9D9DD-F195-4EDE-818D-43EBF54921CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4756CF18-2091-446F-A79D-9E521611DEB5} = {4756CF18-2091-446F-A79D-9E521611DEB5}
+		{29BEE34E-8D6A-47BF-96FA-ABA46F6E9B66} = {29BEE34E-8D6A-47BF-96FA-ABA46F6E9B66}
+		{440BA8EC-0DAA-4E57-9EE4-52B2088031AE} = {440BA8EC-0DAA-4E57-9EE4-52B2088031AE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

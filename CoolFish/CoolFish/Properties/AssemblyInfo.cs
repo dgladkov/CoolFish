@@ -35,6 +35,10 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("3.2.0.0")]
-[assembly: AssemblyFileVersion("3.2.0.0")]
+//
+// This is not a valid assembly version.
+// This file is patched by the CI build server
+//
+[assembly: AssemblyVersion("99.99.0.0")]
+[assembly: AssemblyFileVersion("99.99.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
