@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReleaseManager
 {
@@ -20,17 +15,24 @@ namespace ReleaseManager
                     return;
                 }
 
+
+#if DEBUG
+                const string prefix = "Debug_";
+#else
+                const string prefix = "Release_";
+#endif
+
                 var mainFileName = args[0];
 
                 var version = FileVersionInfo.GetVersionInfo(mainFileName).FileVersion;
-                var archive = ZipFile.Open("Release_" + version + ".zip", ZipArchiveMode.Create);
-                archive.CreateEntryFromFile(mainFileName, mainFileName);
-                for (int i = 1; i < args.Length; i++)
+                using (var archive = ZipFile.Open(prefix + version + ".zip", ZipArchiveMode.Create))
                 {
-                    archive.CreateEntryFromFile(args[i], args[i]);
+                    archive.CreateEntryFromFile(mainFileName, mainFileName);
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        archive.CreateEntryFromFile(args[i], args[i]);
+                    }
                 }
-                archive.Dispose();
-
             }
             catch (Exception ex)
             {

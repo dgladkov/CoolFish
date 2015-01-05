@@ -208,10 +208,6 @@
     <Compile Include="Targets\RemoteTarget.cs" />
     <Compile Include="Targets\TextBoxTarget.cs" />
     <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="Management\CoolManager\D3D\D3D11Device.cs" />
-    <Compile Include="Management\CoolManager\D3D\D3D9Device.cs" />
-    <Compile Include="Management\CoolManager\D3D\D3DDevice.cs" />
-    <Compile Include="Management\CoolManager\D3D\Dirext3D.cs" />
     <Compile Include="Management\CoolManager\HookingLua\DxHook.cs" />
     <Compile Include="Management\CoolManager\NativeMethods.cs" />
     <Compile Include="Management\CoolManager\Objects\ObjectManager.cs" />
@@ -437,7 +433,7 @@
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.Increment.None" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_DetectChanges="True" />
+      <UserProperties BuildVersion_DetectChanges="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.Increment.None" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

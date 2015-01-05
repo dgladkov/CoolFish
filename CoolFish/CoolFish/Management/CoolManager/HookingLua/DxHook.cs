@@ -34,9 +34,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
         };
 
         private static AllocatedMemory _allocatedMemory;
-        private static Dirext3D _dxAddress;
-        private static byte[] _endSceneOriginalBytes;
-        public static volatile bool TriedHackyHook;
+        private static byte[] _originalBytes;
 
         /// <summary>
         ///     Determine if the hook is currently applied or not
@@ -56,10 +54,10 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                 BotManager.Memory.Asm.AddLine(s);
             }
 
-            int size = BotManager.Memory.Asm.Assemble().Length;
+            var assembled = BotManager.Memory.Asm.Assemble();
             BotManager.Memory.Asm.Inject((uint) address);
 
-            return size;
+            return assembled.Length;
         }
 
 
@@ -85,40 +83,17 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
 
                     _allocatedMemory = BotManager.Memory.CreateAllocatedMemory(CODECAVESIZE + 0x1000 + 0x4 + 0x4);
 
-                    _dxAddress = new Dirext3D(BotManager.Memory.Process);
-
+                    var detourFunctionPointer = Offsets.Addresses["CGWorldFrame__Render"];
 
                     // store original bytes
-                    _endSceneOriginalBytes = BotManager.Memory.ReadBytes(_dxAddress.HookPtr - 5, 10);
-                    if (_endSceneOriginalBytes[0] == 0xE9)
+                    _originalBytes = BotManager.Memory.ReadBytes(detourFunctionPointer, 6);
+                    if (_originalBytes[0] == 0xE9)
                     {
                         MessageBox.Show(
                             "It seems CoolFish might have crashed before it could clean up after itself. Please restart WoW and reattach the bot.");
                         return false;
                     }
-                    int jumpLoc = 0;
-
-                    if (_endSceneOriginalBytes[5] == 0xE9)
-                    {
-                        DialogResult result =
-                            MessageBox.Show(
-                                "Another Application was detected that may interfere with CoolFish. Would you like to continue anyway? (This may crash WoW, the other application, or cause CoolFish to not work properly. USE AT YOUR OWN RISK)",
-                                "Warning", MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Warning);
-
-
-                        if (result == DialogResult.No)
-                        {
-                            return false;
-                        }
-                        TriedHackyHook = true;
-                        Logger.Info("Detected Another hook. Trying to hook anyway.");
-
-                        var offset = BotManager.Memory.Read<int>(_dxAddress.HookPtr + 1);
-                        jumpLoc = _dxAddress.HookPtr.ToInt32() + offset + 5;
-                    }
-
-
+                
                     _allocatedMemory.WriteBytes("codeCavePtr", Eraser);
                     _allocatedMemory.WriteBytes("injectedCode", Eraser);
                     _allocatedMemory.Write("addressInjection", 0);
@@ -145,55 +120,31 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     asm = AddRandomAsm(asm);
 
                     // injected code
-
                     int sizeAsm = Inject(asm, _allocatedMemory["injectedCode"]);
 
-                    // Size asm jumpback
-                    int sizeJumpBack;
-
                     // copy and save original instructions
-                    if (jumpLoc != 0)
-                    {
-                        asm.Clear();
-
-                        asm.Add("jmp " + (uint) jumpLoc);
-                        Inject(asm, IntPtr.Add(_allocatedMemory["injectedCode"], sizeAsm));
-                        sizeJumpBack = 5;
-                    }
-                    else
-                    {
-                        BotManager.Memory.WriteBytes(IntPtr.Add(_allocatedMemory["injectedCode"], sizeAsm),
-                            new[] {_endSceneOriginalBytes[5], _endSceneOriginalBytes[6]});
-                        sizeJumpBack = 2;
-                    }
-
+                    BotManager.Memory.WriteBytes(_allocatedMemory["injectedCode"] + sizeAsm, _originalBytes);
 
                     asm.Clear();
-                    asm.Add("jmp " + ((uint) _dxAddress.HookPtr + sizeJumpBack)); // short jump takes 2 bytes.
+                    asm.Add("jmp " + (detourFunctionPointer + _originalBytes.Length));
 
                     // create jump back stub
-                    Inject(asm, _allocatedMemory["injectedCode"] + sizeAsm + sizeJumpBack);
+                    Inject(asm, _allocatedMemory["injectedCode"] + sizeAsm + _originalBytes.Length);
 
                     // create hook jump
                     asm.Clear();
-                    asm.Add("@top:");
                     asm.Add("jmp " + _allocatedMemory["injectedCode"]);
-                    asm.Add("jmp @top");
+                    asm.Add("nop");
 
-                    Inject(asm, _dxAddress.HookPtr - 5);
+                    Inject(asm, detourFunctionPointer);
                     _isApplied = true;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    TriedHackyHook = false;
                     _isApplied = false;
                     if (_allocatedMemory != null)
                     {
                         _allocatedMemory.Dispose();
-                    }
-                    if (_dxAddress != null)
-                    {
-                        _dxAddress.Device.Dispose();
                     }
                     throw;
                 }
@@ -218,24 +169,18 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     }
                     if (BotManager.Memory == null || BotManager.Memory.Process.HasExited)
                     {
-                        TriedHackyHook = false;
                         _isApplied = false;
                         return;
                     }
 
                     // Restore original endscene:
-                    BotManager.Memory.WriteBytes(_dxAddress.HookPtr - 5, _endSceneOriginalBytes);
+                    BotManager.Memory.WriteBytes(Offsets.Addresses["CGWorldFrame__Render"], _originalBytes);
 
                     if (_allocatedMemory != null)
                     {
                         _allocatedMemory.Dispose();
                     }
-                    if (_dxAddress != null && _dxAddress.Device != null)
-                    {
-                        _dxAddress.Device.Dispose();
-                    }
 
-                    TriedHackyHook = false;
                     _isApplied = false;
                 }
             }
@@ -289,7 +234,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
         {
             if (command == null)
             {
-                throw new Exception("ExecuteScript command can not be null!");
+                throw new ArgumentNullException("command");
             }
 
             ExecuteScript(command, new string[0]);
@@ -304,9 +249,13 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
         /// <exception cref="HookNotAppliedException">Thrown when the required hook has not been applied</exception>
         public static string ExecuteScript(string command, string returnVariableName)
         {
-            if (command == null || returnVariableName == null)
+            if (command == null)
             {
-                throw new Exception("ExecuteScript arguments can not be null!");
+                throw new ArgumentNullException("command");
+            }
+            if (returnVariableName == null)
+            {
+                throw new ArgumentNullException("returnVariableName");
             }
 
             return ExecuteScript(command, new[] {returnVariableName})[returnVariableName];
@@ -324,9 +273,13 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
         {
             var returnDict = new Dictionary<string, string>();
 
-            if (executeCommand == null || commands == null)
+            if (executeCommand == null)
             {
-                throw new Exception("ExecuteScript arguments can not be null!");
+                throw new ArgumentNullException("executeCommand");
+            }
+            if (commands == null)
+            {
+                throw new ArgumentNullException("commands");
             }
 
             List<string> enumerable = commands as List<string> ?? commands.ToList();
@@ -335,8 +288,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
 
             if (enumerable.Any())
             {
-                enumerable.RemoveAll(string.IsNullOrWhiteSpace);
-                foreach (string s in enumerable)
+                foreach (string s in enumerable.Where(s => !string.IsNullOrWhiteSpace(s)))
                 {
                     builder.Append(s);
                     builder.Append('\0');
@@ -357,19 +309,17 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
 
             AllocatedMemory mem =
                 BotManager.Memory.CreateAllocatedMemory(commandSpace + commandExecuteSpace + returnAddressSpace +
-                                                        0x4 + 0x4);
+                                                        0x4);
 
             try
             {
                 mem.WriteBytes("command", Encoding.UTF8.GetBytes(builder.ToString()));
                 mem.WriteBytes("commandExecute", Encoding.UTF8.GetBytes(executeCommand));
                 mem.WriteBytes("returnVarsPtr", enumerable.Count != 0 ? new byte[enumerable.Count*0x4] : new byte[0x4]);
-                mem.Write("numberOfReturnVarsAddress", 0);
                 mem.Write("returnVarsNamesPtr", mem["command"]);
 
 
-                InternalExecute(mem["commandExecute"], mem["returnVarsNamesPtr"], enumerable.Count, mem["returnVarsPtr"],
-                    mem["numberOfReturnVarsAddress"]);
+                InternalExecute(mem["commandExecute"], mem["returnVarsNamesPtr"], enumerable.Count, mem["returnVarsPtr"]);
 
 
                 if (enumerable.Any())
@@ -419,7 +369,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
         {
             if (command == null)
             {
-                throw new Exception("GetLocalizedText arguments can not be null!");
+                throw new ArgumentNullException("command");
             }
             string result = GetLocalizedText(new[] {command})[command];
 
@@ -442,7 +392,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
 
             if (commands == null)
             {
-                return returnDict;
+                throw new ArgumentNullException("commands");
             }
 
             List<string> enumerable = commands.ToList();
@@ -452,8 +402,8 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                 return returnDict;
             }
             var builder = new StringBuilder(enumerable.Count);
-            enumerable.RemoveAll(string.IsNullOrWhiteSpace);
-            foreach (string s in enumerable)
+
+            foreach (string s in enumerable.Where(s => !string.IsNullOrWhiteSpace(s)))
             {
                 builder.Append(s);
                 builder.Append('\0');
@@ -466,17 +416,16 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
             int returnAddressSpace = enumerable.Count == 0 ? 0x4 : enumerable.Count*0x4;
 
             AllocatedMemory mem =
-                BotManager.Memory.CreateAllocatedMemory(commandSpace + returnAddressSpace + 0x4 + 0x4);
+                BotManager.Memory.CreateAllocatedMemory(commandSpace + returnAddressSpace + 0x4);
 
             try
             {
                 mem.WriteBytes("command", Encoding.UTF8.GetBytes(builder.ToString()));
                 mem.WriteBytes("returnVarsPtr", new byte[enumerable.Count*0x4]);
-                mem.Write("numberOfReturnVarsAddress", 0);
                 mem.Write("returnVarsNamesPtr", mem["command"]);
 
 
-                InternalExecute(IntPtr.Zero, mem["returnVarsNamesPtr"], enumerable.Count, mem["returnVarsPtr"], mem["numberOfReturnVarsAddress"]);
+                InternalExecute(IntPtr.Zero, mem["returnVarsNamesPtr"], enumerable.Count, mem["returnVarsPtr"]);
 
                 if (enumerable.Any())
                 {
@@ -515,8 +464,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
             return returnDict;
         }
 
-        private static void InternalExecute(IntPtr executeCommandPtr, IntPtr returnVarsNamesPtr, int numberOfReturnVars, IntPtr returnVarsPtr,
-            IntPtr numberOfReturnVarsAddress)
+        private static void InternalExecute(IntPtr executeCommandPtr, IntPtr returnVarsNamesPtr, int numberOfReturnVars, IntPtr returnVarsPtr)
         {
             var asm = new List<string>();
 
@@ -529,32 +477,29 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     "push 0",
                     "push eax",
                     "push eax",
-                    "mov eax, " + Offsets.Addresses["FrameScript_ExecuteBuffer"],
-                    "call eax",
+                    "call " + Offsets.Addresses["FrameScript_ExecuteBuffer"],
                     "add esp, 0xC"
                 });
             }
-            if (returnVarsNamesPtr != IntPtr.Zero && numberOfReturnVarsAddress != IntPtr.Zero &&
+            if (returnVarsNamesPtr != IntPtr.Zero &&
                 returnVarsPtr != IntPtr.Zero)
             {
                 // We want to call GetLocalizedText
                 asm.AddRange(new[]
                 {
-                    "mov eax, [" + Offsets.Addresses["PlayerPointer"] + "]",
-                    "test eax, eax",
-                    "je @leave",
-                    "mov ebx, eax",
-                    "mov esi, " + "[" + numberOfReturnVarsAddress + "]",
+                    "mov esi, 0",
                     "mov edi, [" + returnVarsNamesPtr + "]",
                     "mov edx, " + returnVarsPtr,
                     "@start:",
                     "cmp esi, " + numberOfReturnVars,
                     "je @leave",
                     "push edx",
-                    "mov ecx, ebx",
+                    "push 0",
+                    "push 0",
                     "push -1",
                     "push edi",
-                    "call " + Offsets.Addresses["FrameScript_GetLocalizedText"],
+                    "call " + Offsets.Addresses["FrameScript_GetText"],
+                    "add esp, 10h",
                     "pop edx",
                     "mov [edx], eax", // Copy pointer return value
                     "inc esi",

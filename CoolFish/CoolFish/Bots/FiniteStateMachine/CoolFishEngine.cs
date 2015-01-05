@@ -185,16 +185,7 @@ namespace CoolFishNS.Bots.FiniteStateMachine
             catch (CodeInjectionFailedException ex)
             {
                 const string msg = "Stopping bot because we could not execute code required to continue";
-                if (DxHook.TriedHackyHook)
-                {
-                    Logger.Warn(msg, (Exception) ex);
-                    Logger.Info(
-                        "It seems you tried to create the hook CoolFish needs despite the mention of problems it could cause. This error is likely a result of that. It is recommended that you stop running the interfering program.");
-                }
-                else
-                {
-                    Logger.Error(msg, (Exception) ex);
-                }
+                Logger.Error(msg, (Exception) ex);
             }
             catch (HookNotAppliedException ex)
             {
