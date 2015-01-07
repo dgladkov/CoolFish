@@ -166,6 +166,7 @@ namespace CoolFishNS
                 if (BotManager.LoadedBots.Any())
                 {
                     BotBaseCB.SelectedIndex = 0;
+                    BotBaseCB_DropDownClosed(null, null);
                 }
             });
         }
