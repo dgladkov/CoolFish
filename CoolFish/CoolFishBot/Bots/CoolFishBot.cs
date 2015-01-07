@@ -1,11 +1,11 @@
 ﻿using System;
-using CoolFishNS.Bots.FiniteStateMachine;
+using CoolFishBotNS.FiniteStateMachine;
+using CoolFishNS.Bots;
 using CoolFishNS.Management;
-using CoolFishNS.Properties;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.CoolFishBot
+namespace CoolFishBotNS.Bots
 {
     /// <summary>
     ///     Default CoolFish fishing bot that runs the provided IEngine.
@@ -41,7 +41,7 @@ namespace CoolFishNS.Bots.CoolFishBot
         /// <inheritdoc />
         public string Author
         {
-            get { return Resources.BotAuthor; }
+            get { return "~Unknown~"; }
         }
 
         /// <inheritdoc />
@@ -52,7 +52,7 @@ namespace CoolFishNS.Bots.CoolFishBot
 
         /// <inheritdoc />
         /// <remarks>
-        ///     The <see cref="CoolFishNS.Bots.CoolFishBot.CoolFishBot" /> implementation of this method
+        ///     The <see cref="CoolFishBot" /> implementation of this method
         ///     does some sanity checking and then starts the <see cref="CoolFishEngine" />
         /// </remarks>
         public void StartBot()
@@ -98,7 +98,7 @@ namespace CoolFishNS.Bots.CoolFishBot
 
         /// <inheritdoc />
         /// <remarks>
-        ///     The <see cref="CoolFishNS.Bots.CoolFishBot.CoolFishBot" /> implementation of this method
+        ///     The <see cref="CoolFishBot" /> implementation of this method
         ///     Stops the <see cref="CoolFishEngine" />
         /// </remarks>
         public void StopBot()
@@ -108,8 +108,8 @@ namespace CoolFishNS.Bots.CoolFishBot
 
         /// <inheritdoc />
         /// <remarks>
-        ///     The <see cref="CoolFishNS.Bots.CoolFishBot.CoolFishBot" /> implementation of this method
-        ///     opens the <see cref="CoolFishNS.Bots.CoolFishBot.CoolFishBotSettings" /> window
+        ///     The <see cref="CoolFishBot" /> implementation of this method
+        ///     opens theCoolFishBotSettingshBotSettings" /> window
         /// </remarks>
         public void Settings()
         {

@@ -1,4 +1,4 @@
-﻿<Window x:Name="SettingsWindow" x:Class="CoolFishNS.Bots.CoolFishBot.CoolFishBotSettings"
+﻿<Window x:Name="SettingsWindow" x:Class="CoolFishBotNS.Bots.CoolFishBotSettings"
         x:Uid="CoolFishWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

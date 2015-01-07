@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12B9D9DD-F195-4EDE-818D-43EBF54921CD}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{CB66BDCE-4A6B-4536-B476-0D225D3484FF}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReleaseManager</RootNamespace>
-    <AssemblyName>ReleaseManager</AssemblyName>
+    <RootNamespace>CoolFishBotNS</RootNamespace>
+    <AssemblyName>CoolFishBot</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,23 +31,21 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\Build\x86\Debug\</OutputPath>
+    <OutputPath>..\Build\x86\Debug\Bots\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\..\Build\x86\Release\</OutputPath>
+    <OutputPath>..\Build\x86\Release\Bots\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -59,7 +55,6 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -69,34 +64,85 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip">
-      <HintPath>..\..\packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Bots\CoolFishBot.cs" />
+    <Compile Include="Bots\CoolFishBotSettings.xaml.cs">
+      <DependentUpon>CoolFishBotSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FiniteStateMachine\CoolFishEngine.cs" />
+    <Compile Include="FiniteStateMachine\States\State.cs" />
+    <Compile Include="FiniteStateMachine\States\StateApplyBait.cs" />
+    <Compile Include="FiniteStateMachine\States\StateApplyLure.cs" />
+    <Compile Include="FiniteStateMachine\States\StateBobbing.cs" />
+    <Compile Include="FiniteStateMachine\States\StateDoLoot.cs" />
+    <Compile Include="FiniteStateMachine\States\StateDoNothing.cs" />
+    <Compile Include="FiniteStateMachine\States\StateDoWhisper.cs" />
+    <Compile Include="FiniteStateMachine\States\StateFish.cs" />
+    <Compile Include="FiniteStateMachine\States\StateStopOrLogout.cs" />
+    <Compile Include="FiniteStateMachine\States\StateUseRaft.cs" />
+    <Compile Include="FiniteStateMachine\States\StateUseRumsey.cs" />
+    <Compile Include="FiniteStateMachine\States\StateUseSpear.cs" />
+    <Compile Include="PlayerInventory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ProjectReference Include="..\CoolFish\CoolFish.csproj">
+      <Project>{440ba8ec-0daa-4e57-9ee4-52b2088031ae}</Project>
+      <Name>CoolFish</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LuaResources\DoLoot.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LuaResources\GetLureName.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LuaResources\NeedToApplyBait.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LuaResources\NeedToRunUseRumsey.lua" />
     <None Include="packages.config" />
+    <Resource Include="LuaResources\WhisperNotes.lua" />
+    <Resource Include="LuaResources\UseRaft.lua" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Bots\CoolFishBotSettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>cd $(TargetDir)
-del *.zip
-ReleaseManager.exe CoolFish.exe CoolFish.pdb CoolFish.exe.config fasmdll_managed.dll fasmdll_managed.pdb GreyMagic.dll GreyMagic.pdb Nlog.dll Octokit.dll AWSSDK.dll README.html Plugins Bots</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

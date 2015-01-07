@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading;
 using CoolFishNS.Management;
-using CoolFishNS.Management.CoolManager;
 using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.Management.CoolManager.Objects;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     This state is run if we have nothing else to do and we aren't casting the "fishing" spell already
@@ -65,12 +64,7 @@ namespace CoolFishNS.Bots.FiniteStateMachine.States
             Logger.Info(Name);
             DxHook.ExecuteScript("local name = GetSpellInfo(131490);  CastSpellByName(name);");
 
-
-            // This is the current system uptime as per GetTime() function in lua.
-            // We write this value to LastHardwareAction so that our character isn't logged out due to inactivity
-            var ticks = BotManager.Memory.Read<int>(Offsets.Addresses["Timestamp"]);
-
-            BotManager.Memory.Write(Offsets.Addresses["LastHardwareAction"], ticks);
+            BotManager.ResetAFK();
             Thread.Sleep(500);
             return true;
         }

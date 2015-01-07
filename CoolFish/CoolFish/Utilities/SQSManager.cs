@@ -8,7 +8,7 @@ using NLog;
 
 namespace CoolFishNS.Utilities
 {
-    public class SQSManager
+    internal class SQSManager
     {
         private const string AccountId = "257743725717";
         private const string IdentityPoolId = "us-east-1:8df25573-daf2-4a7e-a380-bb56d8b6dbf0";
@@ -17,7 +17,7 @@ namespace CoolFishNS.Utilities
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly AmazonSQSClient _client;
 
-        public SQSManager()
+        internal SQSManager()
         {
             var credentials = new CognitoAWSCredentials(
                 AccountId,
@@ -30,14 +30,14 @@ namespace CoolFishNS.Utilities
             _client = new AmazonSQSClient(credentials, RegionEndpoint.USEast1);
         }
 
-        public void SendAnalyticsPayload(AnalyticsPayload analyticspayload)
+        internal void SendAnalyticsPayload(AnalyticsPayload analyticspayload)
         {
 #if DEBUG
             return;
 #endif
             try
             {
-                string payload = Serializer.SerializeToJSON(analyticspayload);
+                string payload = Serializer.SerializeToJson(analyticspayload);
                 var message = new SendMessageRequest(AnalyticsQueueUri, payload);
 
                 _client.SendMessageAsync(message);
@@ -48,7 +48,7 @@ namespace CoolFishNS.Utilities
             }
         }
 
-        public void SendLoggingPayload(LoggingPayload loggingPayload)
+        internal void SendLoggingPayload(LoggingPayload loggingPayload)
         {
 #if DEBUG
             return;
@@ -56,7 +56,7 @@ namespace CoolFishNS.Utilities
 
             try
             {
-                string payload = Serializer.SerializeToJSON(loggingPayload);
+                string payload = Serializer.SerializeToJson(loggingPayload);
                 var message = new SendMessageRequest(AnalyticsQueueUri, payload);
 
                 _client.SendMessageAsync(message);

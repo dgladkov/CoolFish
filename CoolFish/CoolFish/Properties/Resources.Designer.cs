@@ -89,31 +89,6 @@ namespace CoolFishNS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to if IsFishingLoot() then 
-        ///	local numLootItems = GetNumLootItems()
-        ///	for i=1,numLootItems do 
-        ///	local Link = GetLootSlotLink(i)
-        ///	local _,name, lootQuantity ,Quality  = GetLootSlotInfo(i)
-        ///	
-        ///		if Link and Quality and name and lootQuantity then
-        ///
-        ///		_, _, id = string.find(Link, &quot;item:(%d+):&quot;)
-        ///			if Quality &gt;= LootQuality then
-        ///				if LootLeftOnly or DontLootLeft then 
-        ///					match = ItemsList[name] or ItemsList[id]
-        ///                
-        ///					if (match) and LootLeftOnly then 
-        ///						LootSlot(i) 
-        ///						ConfirmLootSlot(i)
-        ///					 [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string DoLoot {
-            get {
-                return ResourceManager.GetString("DoLoot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to stop Plugin Pulse Thread after 5 seconds...
         /// </summary>
         internal static string FailedToStopPlugins {
@@ -123,118 +98,11 @@ namespace CoolFishNS.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LureName = nil;
-        ///
-        ///local Lures = {
-        ///	-- Consumable Lures
-        ///	[67404] = true,
-        ///	[6529] = true,
-        ///	[6811] = true,
-        ///	[6530] = true,
-        ///	[6532] = true,
-        ///	[7307] = true,
-        ///	[6533] = true,
-        ///	[62673] = true,
-        ///	[46006] = true,
-        ///	[34861] = true,
-        ///	[68049] = true,
-        ///	[118391] = true; -- Worm Supreme
-        ///	-- Hats
-        ///	[33820] = true, -- Weather
-        ///	[117405] = true, -- Nat&apos;s Drinking Hat
-        ///	[88710] = true, -- Nat&apos;s Hat
-        ///	-- Poles
-        ///	[116826] = true, -- Draenic Fishing Pole
-        ///	[116825] = true -- Savage Fishing Pole
-        ///}
-        ///
-        ///-- Check to see if we have any lures in o [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string GetLureName {
-            get {
-                return ResourceManager.GetString("GetLureName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hit max time limit. Stopping bot..
         /// </summary>
         internal static string HitTimeLimit {
             get {
                 return ResourceManager.GetString("HitTimeLimit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to -- Check to see if the buff has expired already
-        ///AppliedBait = nil;
-        ///if not BaitSpellId or not BaitItemId then
-        ///	return;
-        ///end
-        ///
-        ///local name = GetSpellInfo(BaitSpellId);  
-        ///local _,_,_,_,_,_,expires = UnitBuff(&quot;player&quot;,name); 
-        ///if expires then 
-        ///	expires = expires-GetTime();
-        ///	if expires &lt;= 10 then
-        ///		expires = true
-        ///	else
-        ///		expires = false
-        ///	end
-        ///else
-        ///	expires = true
-        ///end
-        ///
-        ///if expires then
-        ///	-- Check to see if we have any baits in our inventory
-        ///	for i=0,4 do 
-        ///		local numberOfSlots = GetContainerNumSlots(i); 
-        ///		for j=1,numbe [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string NeedToApplyBait {
-            get {
-                return ResourceManager.GetString("NeedToApplyBait", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to local name; 
-        ///
-        ///name = GetSpellInfo(45694); 
-        ///_,_,_,_,_,_,expires = UnitBuff(&quot;player&quot;,name); 
-        ///
-        ///
-        ///local count = 0; 
-        ///for i=0,4 do 
-        ///local numberOfSlots = GetContainerNumSlots(i); 
-        ///for j=1,numberOfSlots do 
-        ///local itemid = GetContainerItemID(i,j)
-        ///if itemid then 
-        ///if itemid ==  34832 then
-        ///local _,stackCounter = GetContainerItemInfo(i,j);
-        ///count = count + stackCounter; 
-        ///end 
-        ///end        
-        ///end 
-        ///end
-        ///
-        ///
-        ///
-        ///if expires then 
-        ///expires = expires-GetTime()
-        ///
-        ///if expires
-        ///&lt; 30 then
-        ///  expires= 1
-        ///  else
-        ///  expires= 0
-        ///  end
-        ///  else
-        ///  expires= [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string NeedToRunUseRumsey {
-            get {
-                return ResourceManager.GetString("NeedToRunUseRumsey", resourceCulture);
             }
         }
         
@@ -289,58 +157,6 @@ namespace CoolFishNS.Properties {
         internal static string SecretBTNMessage {
             get {
                 return ResourceManager.GetString("SecretBTNMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 
-        ///local name; 
-        ///
-        ///-- See if we have the water walking raft and use it instead of spells
-        ///for i=0,4 do 
-        ///	local numberOfSlots = GetContainerNumSlots(i); 
-        ///	for j=1,numberOfSlots do 
-        ///		local itemId = GetContainerItemID(i,j) 
-        ///		if itemId == 124036 then -- The raft item id
-        ///			   name = GetItemInfo(itemId);
-        ///			   RunMacroText(&quot;/use &quot; .. name);
-        ///			   return;
-        ///		end 
-        ///	end 
-        ///end
-        ///
-        ///-- If we don&apos;t have the raft, check to see if we have a water walking spell instead
-        ///local _, englishClass = UnitClass(&quot;player&quot;) 
-        ///
-        ///if englishClass [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string UseRaft {
-            get {
-                return ResourceManager.GetString("UseRaft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to if not CoolFrame then
-        ///CoolFrame = CreateFrame(&quot;FRAME&quot;);
-        ///end
-        ///
-        ///
-        ///NewMessage = 0; 
-        ///CoolFrame:RegisterEvent(&quot;CHAT_MSG_WHISPER&quot;);
-        ///CoolFrame:RegisterEvent(&quot;CHAT_MSG_BN_WHISPER&quot;);
-        ///
-        ///CoolFrame:SetScript(&quot;OnEvent&quot;,
-        ///function(self,event,msg,author,language,status,msgid,unk,chatline,senderguid)
-        ///NewMessage = 1; 
-        ///Message = msg;
-        ///Author = author;
-        ///
-        ///end);.
-        /// </summary>
-        internal static string WhisperNotes {
-            get {
-                return ResourceManager.GetString("WhisperNotes", resourceCulture);
             }
         }
     }

@@ -46,6 +46,10 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
 
         private static int Inject(IEnumerable<string> asm, IntPtr address)
         {
+            if (address == IntPtr.Zero)
+            {
+                throw new CodeInjectionFailedException("Failed to inject code required to continue. Memory address is zero");
+            }
             BotManager.Memory.Asm.Clear();
             BotManager.Memory.Asm.SetMemorySize(0x4096);
 

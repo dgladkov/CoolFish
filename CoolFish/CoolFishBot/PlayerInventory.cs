@@ -1,9 +1,9 @@
 ﻿using System;
+using CoolFishBotNS.Properties;
 using CoolFishNS.Management.CoolManager.HookingLua;
-using CoolFishNS.Properties;
 using NLog;
 
-namespace CoolFishNS.Utilities
+namespace CoolFishBotNS
 {
     /// <summary>
     ///     All functions relating to the Player's in game inventory is stored here

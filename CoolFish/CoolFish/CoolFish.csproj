@@ -155,9 +155,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Octokit, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Octokit, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Octokit.0.6.1\lib\net45\Octokit.dll</HintPath>
+      <HintPath>..\packages\Octokit.0.6.2\lib\net45\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -178,6 +178,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\BotLoader.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -192,10 +193,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Bots\CoolFishBot\CoolFishBotSettings.xaml.cs">
-      <DependentUpon>CoolFishBotSettings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Bots\FiniteStateMachine\States\StateApplyBait.cs" />
     <Compile Include="Exceptions\CodeInjectFailedException.cs" />
     <Compile Include="Exceptions\HookNotAppliedException.cs" />
     <Compile Include="GitHub\GithubAPI.cs" />
@@ -203,13 +200,11 @@
     <Compile Include="Management\CoolManager\Objects\Structs\WoWGUID.cs" />
     <Compile Include="Management\CoolManager\Point.cs" />
     <Compile Include="Management\BotManager.cs" />
-    <Compile Include="Bots\CoolFishBot\CoolFishBot.cs" />
     <Compile Include="Bots\IBot.cs" />
     <Compile Include="Targets\RemoteTarget.cs" />
     <Compile Include="Targets\TextBoxTarget.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Management\CoolManager\HookingLua\DxHook.cs" />
-    <Compile Include="Management\CoolManager\NativeMethods.cs" />
     <Compile Include="Management\CoolManager\Objects\ObjectManager.cs" />
     <Compile Include="Management\CoolManager\Objects\WowContainer.cs" />
     <Compile Include="Management\CoolManager\Objects\WowCorpse.cs" />
@@ -221,16 +216,6 @@
     <Compile Include="Management\CoolManager\Objects\WowPlayerMe.cs" />
     <Compile Include="Management\CoolManager\Objects\WowUnit.cs" />
     <Compile Include="Management\CoolManager\Offsets.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateUseSpear.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateUseRumsey.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateDoWhisper.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateApplyLure.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateBobbing.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateDoLoot.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateDoNothing.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateFish.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateStopOrLogout.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\StateUseRaft.cs" />
     <Compile Include="PluginSystem\IPlugin.cs" />
     <Compile Include="PluginSystem\PluginContainer.cs" />
     <Compile Include="PluginSystem\PluginManager.cs" />
@@ -249,15 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Bots\CoolFishBot\CoolFishBotSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Bots\FiniteStateMachine\CoolFishEngine.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -265,9 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utilities\UserPreferences.cs" />
-    <Compile Include="Utilities\PlayerInventory.cs" />
     <Compile Include="Utilities\Serializer.cs" />
-    <Compile Include="Bots\FiniteStateMachine\States\State.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -277,23 +255,13 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Resource Include="Bots\LuaResources\GetLureName.lua" />
     <None Include="app.manifest" />
-    <Resource Include="Bots\LuaResources\NeedToApplyBait.lua" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Resource Include="Bots\LuaResources\WhisperNotes.lua" />
-    <Resource Include="Bots\LuaResources\UseRaft.lua" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -337,12 +305,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\btn_donate_SM.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Bots\LuaResources\DoLoot.lua" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Bots\LuaResources\NeedToRunUseRumsey.lua" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\appbar.minus.png" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO.Compression;
+using System.IO;
+using Ionic.Zip;
 
 namespace ReleaseManager
 {
@@ -25,13 +26,27 @@ namespace ReleaseManager
                 var mainFileName = args[0];
 
                 var version = FileVersionInfo.GetVersionInfo(mainFileName).FileVersion;
-                using (var archive = ZipFile.Open(prefix + version + ".zip", ZipArchiveMode.Create))
+                using (var archive = new ZipFile(prefix + version + ".zip"))
                 {
-                    archive.CreateEntryFromFile(mainFileName, mainFileName);
+                    archive.AddFile(mainFileName);
                     for (int i = 1; i < args.Length; i++)
                     {
-                        archive.CreateEntryFromFile(args[i], args[i]);
+                        if (File.Exists(args[i]))
+                        {
+                            archive.AddFile(args[i]);
+                        }
+                        else if (Directory.Exists(args[i]))
+                        {
+                            archive.AddDirectory(args[i], args[i]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not determine type for arg: " + args[i]);
+                        }
+                        archive.Save();
+
                     }
+
                 }
             }
             catch (Exception ex)

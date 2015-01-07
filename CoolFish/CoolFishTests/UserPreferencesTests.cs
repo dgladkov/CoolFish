@@ -10,6 +10,7 @@ namespace CoolFishTests
         [TestMethod]
         public void TestHappyCase()
         {
+            UserPreferences.LoadSettings();
             Assert.IsNotNull(UserPreferences.Default);
             Assert.IsNotNull(UserPreferences.Default.Items);
             Assert.IsNotNull(UserPreferences.Default.Plugins);
@@ -18,6 +19,7 @@ namespace CoolFishTests
         [TestMethod]
         public void TestPersistSettings()
         {
+            UserPreferences.LoadSettings();
             UserPreferences.Default.LootOnlyItems = true;
             UserPreferences.Default.LogoutOnStop = true;
             UserPreferences.Default.UseRaft = true;
@@ -38,10 +40,10 @@ namespace CoolFishTests
             UserPreferences.Default.Items = new List<SerializableItem> {testItem};
 
             // Save new different preferences to file
-            UserPreferences.Default.SaveSettings();
+            UserPreferences.SaveSettings();
 
             // Reload the defaults and assert that the defaults have been loaded
-            UserPreferences.Default.LoadDefaults();
+            UserPreferences.LoadDefaults();
             Assert.IsFalse(UserPreferences.Default.LootOnlyItems);
             Assert.IsFalse(UserPreferences.Default.LogoutOnStop);
             Assert.IsFalse(UserPreferences.Default.UseRaft);
@@ -61,7 +63,7 @@ namespace CoolFishTests
             Assert.IsTrue(UserPreferences.Default.DoLoot);
 
             // Load our previously persisted settings and assert that the non-defaults were loaded
-            UserPreferences.Default.LoadSettings();
+            UserPreferences.LoadSettings();
             Assert.IsTrue(UserPreferences.Default.LootOnlyItems);
             Assert.IsTrue(UserPreferences.Default.LogoutOnStop);
             Assert.IsTrue(UserPreferences.Default.UseRaft);

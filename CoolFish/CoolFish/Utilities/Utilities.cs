@@ -26,7 +26,7 @@ namespace CoolFishNS.Utilities
             {
                 using (var client = new WebClient {Proxy = WebRequest.DefaultWebProxy})
                 {
-                    return client.DownloadString("http://unknowndev.github.io/CoolFish/Message.txt");
+                    return client.DownloadString("https://unknowndev.github.io/CoolFish/Message.txt");
                 }
             }
             catch (Exception ex)

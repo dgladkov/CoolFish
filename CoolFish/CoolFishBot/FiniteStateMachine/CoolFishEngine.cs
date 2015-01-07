@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CoolFishNS.Bots.FiniteStateMachine.States;
+using CoolFishBotNS.FiniteStateMachine.States;
+using CoolFishBotNS.Properties;
 using CoolFishNS.Exceptions;
 using CoolFishNS.Management;
 using CoolFishNS.Management.CoolManager.HookingLua;
-using CoolFishNS.Properties;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine
+namespace CoolFishBotNS.FiniteStateMachine
 {
     /// <summary>
     ///     The main driving Engine of the Finite State Machine. This performs all the state running logic.

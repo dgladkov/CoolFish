@@ -10,9 +10,8 @@ using System.Windows.Input;
 using CoolFishNS.Management;
 using CoolFishNS.Utilities;
 using NLog;
-using MessageBox = System.Windows.Forms.MessageBox;
 
-namespace CoolFishNS.Bots.CoolFishBot
+namespace CoolFishBotNS.Bots
 {
     /// <summary>
     ///     Interaction logic for CoolFishBotSettings.xaml
@@ -72,7 +71,7 @@ namespace CoolFishNS.Bots.CoolFishBot
             if (!BotManager.ActiveBot.IsRunning)
             {
                 SaveControlSettings();
-                UserPreferences.Default.SaveSettings();
+                UserPreferences.SaveSettings();
                 Logger.Info("CoolFishBot settings saved.");
                 Close();
             }

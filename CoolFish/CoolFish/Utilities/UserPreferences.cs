@@ -13,7 +13,7 @@ namespace CoolFishNS.Utilities
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static readonly UserPreferences Default = new UserPreferences();
+        public static UserPreferences Default { get; private set; }
 
         public int BaitIndex;
         public NullableKeyValuePair<string, uint, uint> BaitItem;
@@ -48,52 +48,20 @@ namespace CoolFishNS.Utilities
         /// <summary>
         ///     Loads default CoolFish settings
         /// </summary>
-        public void LoadDefaults()
+        public static void LoadDefaults()
         {
             Logger.Info("Loading Default Settings.");
-            CopySettings(new UserPreferences());
-        }
-
-        private void CopySettings(UserPreferences src)
-        {
-            if (src == null)
-            {
-                src = new UserPreferences();
-            }
-
-            Items = src.Items ?? new List<SerializableItem>();
-            NoLure = src.NoLure;
-            BaitItem = src.BaitItem;
-            BaitIndex = src.BaitIndex;
-            Plugins = src.Plugins ?? new Dictionary<string, SerializablePlugin>();
-            LootOnlyItems = src.LootOnlyItems;
-            StopOnNoLures = src.StopOnNoLures;
-            StopOnBagsFull = src.StopOnBagsFull;
-            LogoutOnStop = src.LogoutOnStop;
-            UseRaft = src.UseRaft;
-            ShutdownPcOnStop = src.ShutdownPcOnStop;
-            DontLootLeft = src.DontLootLeft;
-            MinutesToStop = src.MinutesToStop;
-            LootQuality = src.LootQuality;
-            SoundOnWhisper = src.SoundOnWhisper;
-            UseRumsey = src.UseRumsey;
-            UseSpear = src.UseSpear;
-            LogLevel = src.LogLevel;
-            CloseWoWOnStop = src.CloseWoWOnStop;
-            StopOnTime = src.StopOnTime;
-            DoFishing = src.DoFishing;
-            DoBobbing = src.DoBobbing;
-            DoLoot = src.DoLoot;
+            Default = new UserPreferences();
         }
 
         /// <summary>
         ///     Use seralization to save preferences
         /// </summary>
-        public void SaveSettings()
+        public static void SaveSettings()
         {
             try
             {
-                Serializer.Serialize(Constants.UserPreferencesFileName, this);
+                Serializer.Serialize(Constants.UserPreferencesFileName, Default);
             }
             catch (Exception ex)
             {
@@ -104,11 +72,20 @@ namespace CoolFishNS.Utilities
         /// <summary>
         ///     Use seralization to load settings
         /// </summary>
-        public void LoadSettings()
+        public static void LoadSettings()
         {
             try
             {
-                CopySettings(Serializer.DeSerialize<UserPreferences>(Constants.UserPreferencesFileName));
+                var result = Serializer.DeSerialize<UserPreferences>(Constants.UserPreferencesFileName);
+
+                if (result == null)
+                {
+                    LoadDefaults();
+                }
+                else
+                {
+                    Default = result;
+                }
             }
             catch (FileNotFoundException)
             {

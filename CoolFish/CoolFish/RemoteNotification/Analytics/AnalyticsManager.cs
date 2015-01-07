@@ -14,9 +14,9 @@ namespace CoolFishNS.RemoteNotification.Analytics
             manager = new SQSManager();
         }
 
-        public void SendAnalyticsEvent(double eventDurationMS, string eventType, Dictionary<string, string> data = null)
+        public async Task SendAnalyticsEvent(double eventDurationMS, string eventType, Dictionary<string, string> data = null)
         {
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 manager.SendAnalyticsPayload(new AnalyticsPayload
                 {

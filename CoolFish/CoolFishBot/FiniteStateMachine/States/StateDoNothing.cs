@@ -1,7 +1,7 @@
 ﻿using CoolFishNS.Management.CoolManager.Objects;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     This state is run if we are moving or get into combat. This prevents the bot from trying to do anything when it is
@@ -23,12 +23,8 @@ namespace CoolFishNS.Bots.FiniteStateMachine.States
         {
             Logger.Trace("[DoNothingState]");
 
-            WoWPlayerMe me = ObjectManager.Me;
-            if (me == null)
-            {
-                return false;
-            }
-            return me.Combat || me.Speed > 0;
+            var me = ObjectManager.Me;
+            return me == null || me.Combat || me.Speed > 0;
         }
     }
 }

@@ -9,7 +9,7 @@ using CoolFishNS.Management.CoolManager.Objects;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     This state contains all of the conditions in which we might stop the bot and/or logout
@@ -136,12 +136,7 @@ namespace CoolFishNS.Bots.FiniteStateMachine.States
 
             if (UserPreferences.Default.CloseWoWOnStop)
             {
-                Process proc = BotManager.Memory.Process;
-                BotManager.DetachFromProcess();
-                proc.CloseMainWindow();
-                proc.Close();
-                App.ShutDown();
-                Environment.Exit(0);
+                BotManager.SafeShutdown(true);
             }
 
             if (UserPreferences.Default.ShutdownPcOnStop)
