@@ -3,7 +3,7 @@ using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     State which handles applying a fishing lure if we need one

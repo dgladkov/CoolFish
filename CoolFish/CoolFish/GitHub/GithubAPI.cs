@@ -20,29 +20,10 @@ namespace CoolFishNS.GitHub
 
         internal static GitHubClient Client = new GitHubClient(new ProductHeaderValue("CoolFish"));
 
-        internal static Gist CreateGist(string description, string filename, string contents)
-        {
-            try
-            {
-                var gist = new NewGist {Description = description, Public = false};
-                gist.Files.Add(filename, contents);
-                return Client.Gist.Create(gist).Result;
-            }
-            catch (RateLimitExceededException ex)
-            {
-                Logger.Warn("Failed to create gist due to exceeding hourly requests. " + ex.Reset, ex);
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn("Failed to create Gist", ex);
-            }
-            return null;
-        }
-
         internal static Tuple<int, string> GetLatestVersionInfo()
         {
             int latestId = -1;
-            var latestTag = (string) null;
+            string latestTag = null;
             try
             {
                 IReadOnlyList<Release> releases = Client.Release.GetAll("unknowndev", "CoolFish").Result;

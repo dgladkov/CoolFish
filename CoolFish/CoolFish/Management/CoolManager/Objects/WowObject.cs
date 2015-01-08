@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.Management.CoolManager.Objects.Structs;
 
 namespace CoolFishNS.Management.CoolManager.Objects
@@ -163,6 +164,12 @@ namespace CoolFishNS.Management.CoolManager.Objects
         public void MoveTo()
         {
             ObjectManager.Me.MoveTo(Location);
+        }
+
+        public void Interact()
+        {
+            BotManager.Memory.Write(Offsets.Addresses["MouseOverGUID"], Guid);
+            DxHook.ExecuteScript("InteractUnit(\"mouseover\");");
         }
 
         public static WoWGameObject ToWoWGameObject(WoWObject obj)

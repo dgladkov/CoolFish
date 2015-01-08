@@ -46,7 +46,7 @@ namespace CoolFishNS.Utilities
         /// </summary>
         /// <param name="objectToSerialize">generic object to serialize</param>
         /// <typeparam name="T">The generic type to serialize</typeparam>
-        public static string SerializeToJSON<T>(T objectToSerialize)
+        public static string SerializeToJson<T>(T objectToSerialize)
         {
             return ScriptSerializer.Serialize(objectToSerialize);
         }

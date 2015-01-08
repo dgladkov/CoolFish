@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Threading;
-using CoolFishNS.Management;
-using CoolFishNS.Management.CoolManager;
-using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.Management.CoolManager.Objects;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     This state handles if the fishing bobber actively has a fish on the line.
@@ -52,9 +49,8 @@ namespace CoolFishNS.Bots.FiniteStateMachine.States
             Logger.Info(Name);
 
             Thread.Sleep(Random.Next(500, 1750));
-            BotManager.Memory.Write(Offsets.Addresses["MouseOverGUID"], bobber.Guid);
             Logger.Info("Clicking bobber");
-            DxHook.ExecuteScript("InteractUnit(\"mouseover\");");
+            bobber.Interact();
             Thread.Sleep(1000);
             return true;
         }

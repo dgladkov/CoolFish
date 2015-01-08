@@ -1,9 +1,9 @@
-﻿using CoolFishNS.Management.CoolManager.HookingLua;
-using CoolFishNS.Properties;
+﻿using CoolFishBotNS.Properties;
+using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     This state is run if we caught a fish and have items in the loot window

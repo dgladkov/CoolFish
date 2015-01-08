@@ -99,7 +99,10 @@ namespace CoolFishNS.Management.CoolManager.Objects
             get { return BotManager.Memory.Read<IntPtr>(Offsets.Addresses["s_curMgr"]); }
         }
 
-        internal static WoWGUID PlayerGuid
+        /// <summary>
+        /// The guid of the current local player
+        /// </summary>
+        public static WoWGUID PlayerGuid
         {
             get { return BotManager.Memory.Read<WoWGUID>(CurrentManager + (int) Offsets.ObjectManager.LocalGuid); }
         }

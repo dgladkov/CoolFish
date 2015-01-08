@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -15,16 +16,11 @@ namespace CoolFishNS.Management.CoolManager
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private static Dictionary<string, IntPtr> _addresses = new Dictionary<string, IntPtr>();
-
         /// <summary>
         ///     The offsets that the bot uses to read from the WoW process.
         ///     Returns a copy of the internally found offsets to assure it is unmodified
         /// </summary>
-        public static Dictionary<string, IntPtr> Addresses
-        {
-            get { return new Dictionary<string, IntPtr>(_addresses); }
-        }
+        public static ReadOnlyDictionary<string, IntPtr> Addresses { get; private set; }
 
         /// <summary>
         ///     Find the offsets for the <see cref="Process" /> opened by <see cref="BotManager.Memory" />
@@ -40,10 +36,10 @@ namespace CoolFishNS.Management.CoolManager
             {
                 if (proc == null || proc.HasExited)
                 {
-                    Logger.Info("Invalid process");
+                    Logger.Warn("Process is null or has already exited");
                     return false;
                 }
-                var addresses = new Dictionary<string, IntPtr>(_addresses.Count);
+                var addresses = new Dictionary<string, IntPtr>();
                 var fp = new FindPattern(new MemoryStream(Encoding.UTF8.GetBytes(Resources.Patterns)), proc);
                 var baseAddr = (int) proc.MainModule.BaseAddress;
 
@@ -52,8 +48,8 @@ namespace CoolFishNS.Management.CoolManager
                     switch (pattern.Key)
                     {
                         case "FrameScript_ExecuteBuffer":
-                        case "FrameScript_GetLocalizedText":
-                        case "ClntObjMgrGetActivePlayerObj":
+                        case "CGWorldFrame__Render":
+                        case "FrameScript_GetText":
                             addresses.Add(pattern.Key, fp.Get(pattern.Key));
                             break;
                         default:
@@ -71,7 +67,7 @@ namespace CoolFishNS.Management.CoolManager
                     }
                 }
 
-                _addresses = addresses;
+                Addresses = new ReadOnlyDictionary<string, IntPtr>(addresses);
                 return fp.NotFoundCount == 0;
             }
             catch (FileNotFoundException ex)
@@ -90,7 +86,6 @@ namespace CoolFishNS.Management.CoolManager
             {
                 Logger.Error("Exception thrown while finding offsets. ", ex);
             }
-            _addresses = new Dictionary<string, IntPtr>();
             return false;
         }
 

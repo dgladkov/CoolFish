@@ -118,34 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btn_donate_SM" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\btn_donate_SM.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DoLoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LuaResources\DoLoot.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="BotIsNotReadyError" xml:space="preserve">
-    <value>Please attach to a process and select a bot base to use.</value>
+  <data name="GetLureName" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LuaResources\GetLureName.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="PaypalLink" xml:space="preserve">
-    <value>https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=MNTAWFX9F4M7N</value>
+  <data name="NeedToApplyBait" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LuaResources\NeedToApplyBait.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="SecretBTNMessage" xml:space="preserve">
-    <value>Congrats. You found the secret button.</value>
+  <data name="NeedToRunUseRumsey" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LuaResources\NeedToRunUseRumsey.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="BotAuthor" xml:space="preserve">
-    <value>~Unknown~</value>
+  <data name="UseRaft" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LuaResources\UseRaft.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="HitTimeLimit" xml:space="preserve">
-    <value>Hit max time limit. Stopping bot.</value>
-  </data>
-  <data name="FailedToStopPlugins" xml:space="preserve">
-    <value>Failed to stop Plugin Pulse Thread after 5 seconds..</value>
-  </data>
-  <data name="PluginPulseException" xml:space="preserve">
-    <value>Disabling {0} due to an exception. Developers should catch their own exceptions.</value>
-  </data>
-  <data name="PluginError" xml:space="preserve">
-    <value>Error with plugin: {0}</value>
-  </data>
-  <data name="Patterns" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Patterns.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="WhisperNotes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LuaResources\WhisperNotes.lua;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

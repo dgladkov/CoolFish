@@ -19,14 +19,14 @@ namespace CoolFishNS
             AppDomain.CurrentDomain.UnhandledException += ErrorHandling.UnhandledException;
             TaskScheduler.UnobservedTaskException += ErrorHandling.TaskSchedulerOnUnobservedTaskException;
             Current.DispatcherUnhandledException += ErrorHandling.CurrentOnDispatcherUnhandledException;
-            UserPreferences.Default.LoadSettings();
+            UserPreferences.LoadSettings();
             Utilities.Utilities.InitializeLoggers();
         }
 
         internal static void ShutDown()
         {
             BotManager.ShutDown();
-            UserPreferences.Default.SaveSettings();
+            UserPreferences.SaveSettings();
             LogManager.Shutdown();
         }
 

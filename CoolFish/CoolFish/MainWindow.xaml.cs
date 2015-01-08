@@ -135,24 +135,40 @@ namespace CoolFishNS
 
         private void MainWindow1_ContentRendered(object sender, EventArgs e)
         {
-            OutputText.Text = Utilities.Utilities.GetNews() + Environment.NewLine;
-            Logger.Info("CoolFish Version: " + Constants.Version.Value);
-            BotBaseCB_DropDownOpened(null, null);
-            BotBaseCB.SelectedIndex = 0;
             UpdateControlSettings();
+            StartupTask();
+            _splashScreen.Close(new TimeSpan(0));
+        }
 
-            Task.Run(() =>
+        private async void StartupTask()
+        {
+            await Task.Run(() =>
             {
+                Logger.Info(Environment.NewLine + Utilities.Utilities.GetNews() + Environment.NewLine);
+                Logger.Info("CoolFish Version: " + Constants.Version.Value);
                 BotManager.StartUp();
                 _manager.SendAnalyticsEvent(0, "ApplicationStart");
                 Updater.Update();
+                AutoSelectBot();
                 Process[] procs = BotManager.GetWowProcesses();
                 if (procs.Length == 1)
                 {
                     BotManager.AttachToProcess(procs.First());
                 }
             });
-            _splashScreen.Close(new TimeSpan(0));
+        }
+
+        private void AutoSelectBot()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                BotBaseCB_DropDownOpened(null, null);
+                if (BotManager.LoadedBots.Any())
+                {
+                    BotBaseCB.SelectedIndex = 0;
+                    BotBaseCB_DropDownClosed(null, null);
+                }
+            });
         }
 
         #region EventHandlers
@@ -190,7 +206,15 @@ namespace CoolFishNS
         private void StartBTN_Click(object sender, RoutedEventArgs e)
         {
             SaveControlSettings();
-            BotManager.StartActiveBot();
+            if (BotBaseCB.SelectedIndex > -1)
+            {
+                BotManager.StartActiveBot();
+            }
+            else
+            {
+                Logger.Info("Please select a bot from the drop down");
+            }
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -322,12 +346,11 @@ namespace CoolFishNS
 
         private void BotBaseCB_DropDownClosed(object sender, EventArgs e)
         {
-            if (BotBaseCB.SelectedIndex == -1)
+            if (BotBaseCB.SelectedIndex < _bots.Count && BotBaseCB.SelectedIndex >= 0)
             {
-                BotBaseCB.SelectedIndex = 0;
+                BotManager.SetActiveBot(_bots[BotBaseCB.SelectedIndex]); 
             }
-
-            BotManager.SetActiveBot(_bots[BotBaseCB.SelectedIndex]);
+            
         }
 
         #endregion

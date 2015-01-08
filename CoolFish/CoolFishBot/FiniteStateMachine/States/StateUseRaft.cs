@@ -1,44 +1,43 @@
 ﻿using System.Threading;
+using CoolFishBotNS.Properties;
 using CoolFishNS.Management.CoolManager.HookingLua;
-using CoolFishNS.Properties;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
-    ///     State which handles applying the Rumsey  if we need it and have it
+    ///     Run this state if we want to use water walking or Angler's raft item to fish in open water
     /// </summary>
-    public class StateUseRumsey : State
+    public class StateUseRaft : State
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public override int Priority
         {
-            get { return (int) CoolFishEngine.StatePriority.StateUseRumsey; }
+            get { return (int) CoolFishEngine.StatePriority.StateUseRaft; }
         }
 
         public override string Name
         {
-            get { return "Using Rumsey"; }
+            get { return "Using water walk"; }
         }
 
         /// <summary>
-        ///     Runs this state and apply the lure.
+        ///     Execute Lua code to use Raft/Water Walking. See UseRaft.lua in Resources for code.
         /// </summary>
         public override bool Run()
         {
-            if (!UserPreferences.Default.UseRumsey)
+            if (!UserPreferences.Default.UseRaft)
             {
                 return false;
             }
-
-            string res = DxHook.ExecuteScript(Resources.NeedToRunUseRumsey, "UsedRumsey");
+            string res = DxHook.ExecuteScript(Resources.UseRaft, "UsedRaft");
 
             if (res == "1")
             {
                 Logger.Info(Name);
-                Thread.Sleep(1500);
+                Thread.Sleep(1000);
                 return true;
             }
             return false;

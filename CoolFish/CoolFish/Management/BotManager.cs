@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CoolFishNS.Bots;
-using CoolFishNS.Bots.CoolFishBot;
 using CoolFishNS.Management.CoolManager;
 using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.PluginSystem;
@@ -19,22 +18,22 @@ namespace CoolFishNS.Management
     public static class BotManager
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        internal static readonly Dictionary<string, IBot> LoadedBots = new Dictionary<string, IBot>();
-
         private static readonly object LockObject = new object();
+        private static readonly BotLoader BotLoader = new BotLoader();
+        internal static readonly Dictionary<string, IBot> LoadedBots = new Dictionary<string, IBot>();
 
         static BotManager()
         {
-            var bot = new CoolFishBot();
-            LoadBot(bot);
-            SetActiveBot(bot);
+            foreach (var bot in BotLoader.LoadBots())
+            {
+                LoadBot(bot);
+            }
         }
 
         /// <summary>
         ///     The main ExternalProcessReader object that reads/writes memory to the attached process
         /// </summary>
-        internal static ExternalProcessReader Memory { get; private set; }
+        public static ExternalProcessReader Memory { get; private set; }
 
         /// <summary>
         ///     Returns true if we are attached to a Wow process and can perform memory operations and DXHook methods
@@ -247,6 +246,21 @@ namespace CoolFishNS.Management
         }
 
         /// <summary>
+        /// Resets the afk flag for the Local Player
+        /// </summary>
+        public static void ResetAFK()
+        {
+            if (IsAttached)
+            {
+                // This is the current system uptime as per GetTime() function in lua.
+                // We write this value to LastHardwareAction so that our character isn't logged out due to inactivity
+                var ticks = Memory.Read<int>(Offsets.Addresses["Timestamp"]);
+
+                Memory.Write(Offsets.Addresses["LastHardwareAction"], ticks);
+            }
+        }
+
+        /// <summary>
         ///     Gets a List of 32-bit Wow processes currently running on the system
         /// </summary>
         /// <returns>List of Process objects</returns>
@@ -284,12 +298,40 @@ namespace CoolFishNS.Management
         {
             try
             {
-                ActiveBot.Settings();
+                if (ActiveBot != null)
+                {
+                    ActiveBot.Settings();
+                }
+
             }
             catch (Exception ex)
             {
                 Logger.Error("Exception thrown while trying to modify bot settings", ex);
             }
+        }
+
+        /// <summary>
+        /// Shuts down the CoolFish process in a safe as possible manner.
+        /// If you implement and bot
+        /// </summary>
+        /// <param name="closeWoWProcess">true to also close the wow process during shutdown</param>
+        public static void SafeShutdown(bool closeWoWProcess = false)
+        {
+            Process proc = Memory.Process;
+            App.ShutDown();
+            if (closeWoWProcess)
+            {
+                try
+                {
+                    proc.Kill();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error("Failed to kill wow process", ex);
+                }
+
+            }
+            Environment.Exit(0);
         }
 
         internal static void StartUp()

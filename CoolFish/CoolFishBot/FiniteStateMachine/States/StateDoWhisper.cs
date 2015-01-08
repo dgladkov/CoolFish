@@ -6,7 +6,7 @@ using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
     ///     This state is run if we want to be notified by whispers in the game and one occurs.

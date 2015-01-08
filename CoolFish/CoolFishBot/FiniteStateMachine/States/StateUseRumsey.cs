@@ -1,26 +1,26 @@
 ﻿using System.Threading;
+using CoolFishBotNS.Properties;
 using CoolFishNS.Management.CoolManager.HookingLua;
-using CoolFishNS.Properties;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
-    ///     State which handles applying a fishing lure if we need one
+    ///     State which handles applying the Rumsey  if we need it and have it
     /// </summary>
-    public class StateApplyBait : State
+    public class StateUseRumsey : State
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public override int Priority
         {
-            get { return (int) CoolFishEngine.StatePriority.StateApplyBait; }
+            get { return (int) CoolFishEngine.StatePriority.StateUseRumsey; }
         }
 
         public override string Name
         {
-            get { return "Applying bait"; }
+            get { return "Using Rumsey"; }
         }
 
         /// <summary>
@@ -28,14 +28,14 @@ namespace CoolFishNS.Bots.FiniteStateMachine.States
         /// </summary>
         public override bool Run()
         {
-            if (UserPreferences.Default.BaitIndex <= 0)
+            if (!UserPreferences.Default.UseRumsey)
             {
                 return false;
             }
 
-            string result = DxHook.ExecuteScript(Resources.NeedToApplyBait, "AppliedBait");
+            string res = DxHook.ExecuteScript(Resources.NeedToRunUseRumsey, "UsedRumsey");
 
-            if (result == "1")
+            if (res == "1")
             {
                 Logger.Info(Name);
                 Thread.Sleep(1500);

@@ -1,43 +1,44 @@
 ﻿using System.Threading;
+using CoolFishBotNS.Properties;
 using CoolFishNS.Management.CoolManager.HookingLua;
-using CoolFishNS.Properties;
 using CoolFishNS.Utilities;
 using NLog;
 
-namespace CoolFishNS.Bots.FiniteStateMachine.States
+namespace CoolFishBotNS.FiniteStateMachine.States
 {
     /// <summary>
-    ///     Run this state if we want to use water walking or Angler's raft item to fish in open water
+    ///     State which handles applying a fishing lure if we need one
     /// </summary>
-    public class StateUseRaft : State
+    public class StateApplyBait : State
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public override int Priority
         {
-            get { return (int) CoolFishEngine.StatePriority.StateUseRaft; }
+            get { return (int) CoolFishEngine.StatePriority.StateApplyBait; }
         }
 
         public override string Name
         {
-            get { return "Using water walk"; }
+            get { return "Applying bait"; }
         }
 
         /// <summary>
-        ///     Execute Lua code to use Raft/Water Walking. See UseRaft.lua in Resources for code.
+        ///     Runs this state and apply the lure.
         /// </summary>
         public override bool Run()
         {
-            if (!UserPreferences.Default.UseRaft)
+            if (UserPreferences.Default.BaitIndex <= 0)
             {
                 return false;
             }
-            string res = DxHook.ExecuteScript(Resources.UseRaft, "UsedRaft");
 
-            if (res == "1")
+            string result = DxHook.ExecuteScript(Resources.NeedToApplyBait, "AppliedBait");
+
+            if (result == "1")
             {
                 Logger.Info(Name);
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
                 return true;
             }
             return false;
