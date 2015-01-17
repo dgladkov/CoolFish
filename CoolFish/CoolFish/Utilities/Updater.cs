@@ -32,6 +32,10 @@ namespace CoolFishNS.Utilities
 
         internal static async Task Update()
         {
+#if DEBUG
+            return;
+#endif
+
             await Task.Run(() =>
             {
                 try

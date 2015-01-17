@@ -50,18 +50,10 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
             {
                 throw new CodeInjectionFailedException("Failed to inject code required to continue. Memory address is zero");
             }
-            BotManager.Memory.Asm.Clear();
-            BotManager.Memory.Asm.SetMemorySize(0x4096);
-
-            foreach (string s in asm)
-            {
-                BotManager.Memory.Asm.AddLine(s);
-            }
-
-            var assembled = BotManager.Memory.Asm.Assemble();
-            BotManager.Memory.Asm.Inject((uint) address);
-
-            return assembled.Length;
+            var assembly = string.Join("\n", asm);
+            assembly = "use32\n" + "org 0x" + address.ToString("X") + "\n" + assembly;
+            var result = Asm.Assemble(assembly);
+            return BotManager.Memory.WriteBytes(address, result);
         }
 
 
@@ -109,15 +101,15 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                         "pushfd",
                         "mov eax, [" + _allocatedMemory["addressInjection"] + "]",
                         "test eax, eax", // Test if you need launch injected code
-                        "je @out",
+                        "je .leave",
                         "mov eax, [" + _allocatedMemory["addressInjection"] + "]",
                         "call eax", // Launch Function
                         "mov [" + _allocatedMemory["returnInjectionAsm"] + "], eax", // Copy pointer return value
                         "mov edx, " + _allocatedMemory["addressInjection"], // Enter value 0 of so we know we are done
                         "mov ecx, 0",
                         "mov [edx], ecx",
-                        "@out:", // Close function
-                        "popfd", // load reg
+                        ".leave:", // Close function
+                        "popfd",
                         "popad"
                     };
 
@@ -494,9 +486,9 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     "mov esi, 0",
                     "mov edi, [" + returnVarsNamesPtr + "]",
                     "mov edx, " + returnVarsPtr,
-                    "@start:",
+                    ".start:",
                     "cmp esi, " + numberOfReturnVars,
-                    "je @leave",
+                    "je .leave",
                     "push edx",
                     "push 0",
                     "push 0",
@@ -508,14 +500,14 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     "mov [edx], eax", // Copy pointer return value
                     "inc esi",
                     "add edx, 4",
-                    "@start_loop:",
+                    ".start_loop:",
                     "inc edi",
                     "mov al, [edi]",
                     "test al, al",
-                    "jne @start_loop",
+                    "jne .start_loop",
                     "inc edi",
-                    "jmp @start",
-                    "@leave:"
+                    "jmp .start",
+                    ".leave:"
                 });
             }
 
