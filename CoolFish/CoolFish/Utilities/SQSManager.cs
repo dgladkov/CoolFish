@@ -28,6 +28,7 @@ namespace CoolFishNS.Utilities
                 );
 
             _client = new AmazonSQSClient(credentials, RegionEndpoint.USEast1);
+
         }
 
         internal void SendAnalyticsPayload(AnalyticsPayload analyticspayload)

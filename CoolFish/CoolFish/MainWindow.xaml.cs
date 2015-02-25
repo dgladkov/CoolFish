@@ -354,5 +354,43 @@ namespace CoolFishNS
         }
 
         #endregion
+
+        private void Hide_BTN_Click(object sender, RoutedEventArgs e)
+        {
+            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0)
+            {
+                var window = _processes[ProcessCB.SelectedIndex].MainWindowHandle;
+                NativeImports.HideWindow(window);
+            }
+            else
+            {
+                Logger.Warn("Please pick a process to hide");
+            }
+        }
+
+        private void Show_BTN_Click(object sender, RoutedEventArgs e)
+        {
+            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0)
+            {
+                var window = _processes[ProcessCB.SelectedIndex].MainWindowHandle;
+                if (window == IntPtr.Zero)
+                {
+                    var windows = NativeImports.GetProcessWindows(_processes[ProcessCB.SelectedIndex].Id);
+                    foreach (var ptr in windows)
+                    {
+                        NativeImports.ShowWindow(ptr);
+                    }
+                }
+                else
+                {
+                    NativeImports.ShowWindow(window);
+                }
+
+            }
+            else
+            {
+                Logger.Warn("Please pick a process to show");
+            }
+        }
     }
 }

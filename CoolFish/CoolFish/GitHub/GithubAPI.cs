@@ -20,10 +20,9 @@ namespace CoolFishNS.GitHub
 
         internal static GitHubClient Client = new GitHubClient(new ProductHeaderValue("CoolFish"));
 
-        internal static Tuple<int, string> GetLatestVersionInfo()
+        internal static int? GetLatestVersionId()
         {
-            int latestId = -1;
-            string latestTag = null;
+            int? latestId = null;
             try
             {
                 IReadOnlyList<Release> releases = Client.Release.GetAll("unknowndev", "CoolFish").Result;
@@ -31,20 +30,12 @@ namespace CoolFishNS.GitHub
 
                 foreach (Release release in releases)
                 {
-                    try
-                    {
                         var version = new Version(release.TagName);
                         if (version > latestRelease)
                         {
-                            latestTag = release.TagName;
                             latestId = release.Id;
                             latestRelease = version;
                         }
-                    }
-                    catch (Exception)
-                    {
-                        //Skip this release because the tagname is probably bad
-                    }
                 }
             }
             catch (RateLimitExceededException ex)
@@ -55,77 +46,26 @@ namespace CoolFishNS.GitHub
             {
                 Logger.Warn("Failed to check for new version", ex);
             }
-            return latestId > -1 ? new Tuple<int, string>(latestId, latestTag) : null;
+            return latestId;
         }
 
-        internal static void DownloadAsset(int id, string tag)
+        internal static string DownloadAsset(int id)
         {
-            try
-            {
-                ;
-                IReadOnlyList<ReleaseAsset> assets = Client.Release.GetAssets("unknowndev", "CoolFish", id).Result;
+
+                
+                var assets = Client.Release.GetAssets("unknowndev", "CoolFish", id).Result;
                 if (assets.Any())
                 {
                     using (var client = new WebClient())
                     {
                         Logger.Info("Downloading File...");
                         client.DownloadFile(
-                            new Uri(string.Format("https://github.com/unknowndev/CoolFish/releases/download/{0}/{1}", tag, assets[0].Name)),
+                            new Uri(assets[0].BrowserDownloadUrl),
                             assets[0].Name);
-                        ClientOnDownloadFileCompleted(assets[0].Name);
+                        return assets[0].Name;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Error downloading new version", ex);
-                MessageBox.Show("An error occurred while downloading the new version. Please try again or visit the website to download it manually.");
-            }
-        }
-
-        private static void ClientOnDownloadFileCompleted(string fileName)
-        {
-            try
-            {
-                Logger.Info("Download Complete.");
-                BotManager.DetachFromProcess();
-                App.ShutDown();
-                DeleteOldSetupFiles();
-                ZipFile.ExtractToDirectory(fileName, Constants.ApplicationPath.Value);
-                MessageBox.Show("The update was complete. CoolFish will restart now.");
-                Process.Start("CoolFish.exe");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Failed to extract and run the latest version. Please download and run the latest version manually.", ex);
-                MessageBox.Show("Failed to extract and run the latest version. Please download and run the latest version manually.");
-            }
-
-            Process.GetCurrentProcess().Kill();
-        }
-
-        private static void DeleteOldSetupFiles()
-        {
-            var info = new DirectoryInfo(Constants.ApplicationPath.Value);
-            string backup = Constants.ApplicationPath.Value + "\\Backup\\";
-            if (!Directory.Exists(backup))
-            {
-                Directory.CreateDirectory(backup);
-            }
-
-            // Clean up old setup files if they exist
-            IEnumerable<FileInfo> files =
-                info.GetFiles().Where(file => !file.Name.Equals(Constants.UserPreferencesFileName) && !file.Name.EndsWith(".zip"));
-
-            foreach (FileInfo file in files)
-            {
-                string newFile = backup + file.Name + ".bak";
-                if (File.Exists(newFile))
-                {
-                    File.Delete(newFile);
-                }
-                file.MoveTo(newFile);
-            }
+            return null;
         }
     }
 }

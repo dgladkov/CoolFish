@@ -7,6 +7,7 @@ using CoolFishNS.Bots;
 using CoolFishNS.Management.CoolManager;
 using CoolFishNS.Management.CoolManager.HookingLua;
 using CoolFishNS.PluginSystem;
+using CoolFishNS.Utilities;
 using GreyMagic;
 using NLog;
 
@@ -41,6 +42,15 @@ namespace CoolFishNS.Management
         public static bool IsAttached
         {
             get { return Memory != null && Memory.IsProcessOpen && Memory.IsThreadOpen && !Memory.Process.HasExited; }
+        }
+
+        public static Process GetAttachedProcess()
+        {
+            if (IsAttached)
+            {
+                return Memory.Process;
+            }
+            return null;
         }
 
         /// <summary>
@@ -160,18 +170,6 @@ namespace CoolFishNS.Management
                             Logger.Info("Attached to: " + process.Id);
                             return;
                         }
-                    }
-                }
-                catch (FileNotFoundException ex)
-                {
-                    if (ex.FileName.Contains("fasmdll_managed"))
-                    {
-                        Logger.Fatal(
-                            "You have not downloaded a required prerequisite for CoolFish. Please visit the following download page for the Visual C++ Redistributable: http://www.microsoft.com/en-us/download/details.aspx?id=40784 (Download the vcredist_x86.exe when asked)");
-                    }
-                    else
-                    {
-                        Logger.Error("Failed to attach do to an exception. Missing File: " + ex.FileName, (Exception) ex);
                     }
                 }
                 catch (Exception ex)

@@ -70,18 +70,6 @@ namespace CoolFishNS.Management.CoolManager
                 Addresses = new ReadOnlyDictionary<string, IntPtr>(addresses);
                 return fp.NotFoundCount == 0;
             }
-            catch (FileNotFoundException ex)
-            {
-                if (ex.FileName.Contains("fasmdll_managed"))
-                {
-                    Logger.Fatal(
-                        "You have not downloaded a required prerequisite for CoolFish. Please visit the following download page for the Visual C++ Redistributable: http://www.microsoft.com/en-us/download/details.aspx?id=40784 (Download the vcredist_x86.exe when asked)");
-                }
-                else
-                {
-                    throw;
-                }
-            }
             catch (Exception ex)
             {
                 Logger.Error("Exception thrown while finding offsets. ", ex);
@@ -108,9 +96,9 @@ namespace CoolFishNS.Management.CoolManager
             NameString = 0x21,
 
             IsCasting = 0xF38, //6.0.2
-            IsChanneling = 0xF58, //6.0.2
-            Speed1 = 0x124,
-            Speed2 = 0x88
+            IsChanneling = 0xF88, // 6.1
+            Speed1 = 0x12C, // 6.1
+            Speed2 = 0x88 // 6.1
         }
 
         /// <summary>

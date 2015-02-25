@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CoolFishNS.GitHub;
+using CoolFishNS.Management;
 using NLog;
 
 namespace CoolFishNS.Utilities
@@ -41,13 +42,17 @@ namespace CoolFishNS.Utilities
                 try
                 {
                     Logger.Info("Checking for a new version of CoolFish");
-                    Tuple<int, string> latestInfo = GithubAPI.GetLatestVersionInfo();
-                    if (latestInfo != null)
+                    var latestInfo = GithubAPI.GetLatestVersionId();
+                    if (latestInfo.HasValue)
                     {
                         Logger.Info("A new version of CoolFish was found. Downloading the latest version.");
                         MessageBox.Show("A new version of CoolFish was found. We will now update to the latest version", "Update Required",
                             MessageBoxButtons.OK);
-                        GithubAPI.DownloadAsset(latestInfo.Item1, latestInfo.Item2);
+                        GithubAPI.DownloadAsset(latestInfo.Value);
+
+                        Logger.Info("Download Complete.");
+                        MessageBox.Show("The download has completed. Please extract the zip file in the CoolFish directory. This application will now close.");
+                        BotManager.SafeShutdown();
                     }
                     else
                     {

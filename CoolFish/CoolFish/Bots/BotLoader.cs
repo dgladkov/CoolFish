@@ -10,7 +10,9 @@ namespace CoolFishNS.Bots
     internal class BotLoader
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly Lazy<string> BotsDirectory = new Lazy<string>(() => Path.Combine(Constants.ApplicationPath.Value, "Bots")); 
+        private static readonly Lazy<string> BotsDirectory = new Lazy<string>(() => Path.Combine(Constants.ApplicationPath.Value, "Bots"));
+        private const string OldCoolFishBot = "\\CoolFishBot.dll";
+        private const string OldCoolFishBotPdb = "\\CoolFishBot.pdb";
 
         internal List<IBot> LoadBots()
         {
@@ -21,6 +23,8 @@ namespace CoolFishNS.Bots
                 Logger.Warn("Bot directory did not exist. No bots loaded.");
                 return botList;
             }
+            DeleteLegacy();
+
             var bots = Directory.GetFiles(BotsDirectory.Value, "*.dll");
 
             foreach (string bot in bots)
@@ -43,6 +47,25 @@ namespace CoolFishNS.Bots
                 }
             }
             return botList;
+        }
+
+        private void DeleteLegacy()
+        {
+            try
+            {
+                if (File.Exists(BotsDirectory + OldCoolFishBot))
+                {
+                    File.Delete(BotsDirectory + OldCoolFishBot);
+                }
+                if (File.Exists(BotsDirectory + OldCoolFishBotPdb))
+                {
+                    File.Delete(BotsDirectory + OldCoolFishBotPdb);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message, ex);
+            }
         }
     }
 }

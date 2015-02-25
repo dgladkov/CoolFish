@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CoolFishNS.Exceptions;
 using CoolFishNS.Management.CoolManager.D3D;
+using CoolFishNS.Utilities;
 using GreyMagic;
 using NLog;
 
@@ -82,7 +83,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     var detourFunctionPointer = Offsets.Addresses["CGWorldFrame__Render"];
 
                     // store original bytes
-                    _originalBytes = BotManager.Memory.ReadBytes(detourFunctionPointer, 6);
+                    _originalBytes = BotManager.Memory.ReadBytes(detourFunctionPointer, 8);
                     if (_originalBytes[0] == 0xE9)
                     {
                         MessageBox.Show(
@@ -131,6 +132,8 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     asm.Clear();
                     asm.Add("jmp " + _allocatedMemory["injectedCode"]);
                     asm.Add("nop");
+                    asm.Add("nop");
+                    asm.Add("nop");
 
                     Inject(asm, detourFunctionPointer);
                     _isApplied = true;
@@ -172,17 +175,19 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                     // Restore original endscene:
                     BotManager.Memory.WriteBytes(Offsets.Addresses["CGWorldFrame__Render"], _originalBytes);
 
-                    if (_allocatedMemory != null)
-                    {
-                        _allocatedMemory.Dispose();
-                    }
-
-                    _isApplied = false;
+                }
+                if (_allocatedMemory != null)
+                {
+                    _allocatedMemory.Dispose();
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error("Exception thrown while restoring original DirectX function", ex);
+            }
+            finally
+            {
+                _isApplied = false;
             }
         }
 
@@ -205,15 +210,26 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
 
 
                 _allocatedMemory.Write("addressInjection", _allocatedMemory["codeCavePtr"]);
+                
 
                 Stopwatch timer = Stopwatch.StartNew();
 
                 while (_allocatedMemory.Read<int>("addressInjection") > 0)
                 {
                     Thread.Sleep(1);
-                    if (timer.ElapsedMilliseconds >= 10000)
+                    if (timer.ElapsedMilliseconds >= 3000)
                     {
-                        throw new CodeInjectionFailedException("Failed to inject code after 10 seconds. Last Error: " + Marshal.GetLastWin32Error());
+                        var window = BotManager.Memory.Process.MainWindowHandle;
+                        if (NativeImports.isWindowMinimized(window))
+                        {
+                            Logger.Warn("CoolFish can not run when WoW is minimized. Please keep the window in background only.");
+                            NativeImports.ShowWindow(window);
+                            timer.Restart();
+                        }
+                        else
+                        {
+                            throw new CodeInjectionFailedException("Failed to inject code after 3 seconds. Last Error: " + Marshal.GetLastWin32Error());
+                        }
                     }
                 } // Wait to launch code
 
@@ -307,8 +323,6 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                 BotManager.Memory.CreateAllocatedMemory(commandSpace + commandExecuteSpace + returnAddressSpace +
                                                         0x4);
 
-            try
-            {
                 mem.WriteBytes("command", Encoding.UTF8.GetBytes(builder.ToString()));
                 mem.WriteBytes("commandExecute", Encoding.UTF8.GetBytes(executeCommand));
                 mem.WriteBytes("returnVarsPtr", enumerable.Count != 0 ? new byte[enumerable.Count*0x4] : new byte[0x4]);
@@ -346,11 +360,9 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                         finalResult => { }
                         );
                 }
-            }
-            finally
-            {
+
                 mem.Dispose();
-            }
+            
 
             return returnDict;
         }
@@ -414,8 +426,6 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
             AllocatedMemory mem =
                 BotManager.Memory.CreateAllocatedMemory(commandSpace + returnAddressSpace + 0x4);
 
-            try
-            {
                 mem.WriteBytes("command", Encoding.UTF8.GetBytes(builder.ToString()));
                 mem.WriteBytes("returnVarsPtr", new byte[enumerable.Count*0x4]);
                 mem.Write("returnVarsNamesPtr", mem["command"]);
@@ -451,11 +461,7 @@ namespace CoolFishNS.Management.CoolManager.HookingLua
                         finalResult => { }
                         );
                 }
-            }
-            finally
-            {
                 mem.Dispose();
-            }
 
             return returnDict;
         }
