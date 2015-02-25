@@ -1,5 +1,5 @@
 News: 
-Coolfish for Wow 6.0.3 32-bit Client Only
+Coolfish for Wow 6.1.0 32-bit Client Only
 
 Latest release should be working:
 https://github.com/unknowndev/CoolFish/releases/latest
