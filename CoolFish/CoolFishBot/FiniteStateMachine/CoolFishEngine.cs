@@ -166,7 +166,6 @@ namespace CoolFishBotNS.FiniteStateMachine
         private void Run()
         {
             Logger.Info("Started Engine");
-
             try
             {
                 InitOptions();
@@ -184,8 +183,7 @@ namespace CoolFishBotNS.FiniteStateMachine
             }
             catch (CodeInjectionFailedException ex)
             {
-                const string msg = "Stopping bot because we could not execute code required to continue";
-                Logger.Error(msg, (Exception) ex);
+                    Logger.Error("Stopping bot because we could not execute code required to continue", (Exception)ex);
             }
             catch (HookNotAppliedException ex)
             {
