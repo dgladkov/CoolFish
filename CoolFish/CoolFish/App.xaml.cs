@@ -26,7 +26,6 @@ namespace CoolFishNS
 
         internal static void ShutDown()
         {
-            BotManager.ShutDown();
             UserPreferences.SaveSettings();
             LogManager.Shutdown();
         }
