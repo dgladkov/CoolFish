@@ -61,7 +61,7 @@
                           Margin="0,-49,-5,0">
                         <ComboBox x:Name="LogLevelCMB" Margin="482,57,0,0"
                                   SelectionChanged="LogLevelCMB_SelectionChanged" SelectedIndex="2" Height="26"
-                                  VerticalAlignment="Top" HorizontalAlignment="Left" Width="155">
+                                  VerticalAlignment="Top" HorizontalAlignment="Left" Width="155" IsEnabled="False">
                             <TextBlock Text="Trace" />
                             <TextBlock Text="Debug" />
                             <TextBlock Text="Info" />
@@ -70,7 +70,7 @@
                         </ComboBox>
                         <Button x:Uid="AttachBTN" x:Name="AttachBTN" Content="Attach" Margin="399,88,0,0"
                                 VerticalAlignment="Top" Click="btn_Attach_Click" HorizontalAlignment="Left" Width="75"
-                                Opacity="0.98" Height="26" />
+                                Opacity="0.98" Height="26" IsEnabled="False" />
                         <ComboBox x:Uid="ProcessCB" x:Name="ProcessCB" Margin="10,88,0,0"
                                   DropDownOpened="ComboBox_DropDownOpened_1" HorizontalAlignment="Left" Width="384"
                                   Height="26" VerticalAlignment="Top"
@@ -78,21 +78,21 @@
                         <Button x:Uid="StartBTN" x:Name="StartBTN" Content="Start"
                                 Margin="482,119,0,0"
                                 VerticalAlignment="Top" Click="StartBTN_Click" HorizontalAlignment="Left" Width="75"
-                                Height="26" />
+                                Height="26" IsEnabled="False" />
                         <Button x:Uid="StopBTN" x:Name="StopBTN" Content="Stop" Margin="562,119,0,0"
                                 VerticalAlignment="Top" Click="Button_Click_2" HorizontalAlignment="Left" Width="75"
-                                Height="26" />
+                                Height="26" IsEnabled="False" />
                         <ComboBox x:Name="BotBaseCB" HorizontalAlignment="Left" Margin="10,119,0,0" Height="26"
                                   VerticalAlignment="Top" Width="384" DropDownOpened="BotBaseCB_DropDownOpened"
                                   DropDownClosed="BotBaseCB_DropDownClosed" />
                         <Button x:Uid="AttachBTN" x:Name="SettingsBTN" Content="Settings" Margin="399,119,0,0"
                                 VerticalAlignment="Top" Click="btn_Settings_Click" HorizontalAlignment="Left"
-                                Width="75" Height="26" />
+                                Width="75" Height="26" IsEnabled="False" />
                         <TextBox x:Name="OutputText" TextWrapping="Wrap" Margin="10,150,10,0"
                                  VerticalScrollBarVisibility="Visible" Height="120" VerticalAlignment="Top" />
                         <Button x:Uid="AttachBTN" x:Name="Hide_BTN" Content="Hide" Margin="482,88,0,0"
                         	VerticalAlignment="Top" Click="Hide_BTN_Click" HorizontalAlignment="Left" Width="75"
-                        	Opacity="0.98" Height="26" />
+                        	Opacity="0.98" Height="26" IsEnabled="False" />
                     </Grid>
                 </TabItem>
                 <TabItem x:Uid="PluginTab" x:Name="PluginTab" Margin="-132,43,180,-25" RenderTransformOrigin="0.5,0.5"
@@ -158,9 +158,6 @@
 
 
             </TabControl>
-            <Button x:Uid="AttachBTN" x:Name="Show_BTN" Content="Show" Margin="565,69,0,0"
-            	VerticalAlignment="Top" Click="Show_BTN_Click" HorizontalAlignment="Left" Width="75"
-            	Opacity="0.98" Height="26" />
         </Grid>
     </Border>
 

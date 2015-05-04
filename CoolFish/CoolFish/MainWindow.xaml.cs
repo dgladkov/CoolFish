@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +16,7 @@ using CoolFishNS.Utilities;
 using NLog;
 using NLog.Config;
 using NLog.Targets.Wrappers;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CoolFishNS
 {
@@ -26,13 +26,11 @@ namespace CoolFishNS
     public partial class MainWindow
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly IList<IBot> _bots = new List<IBot>();
         private readonly AnalyticsManager _manager;
         private readonly ICollection<CheckBox> _pluginCheckBoxesList = new Collection<CheckBox>();
         private readonly SplashScreen _splashScreen;
         private Process[] _processes = new Process[0];
-
 
         public MainWindow(SplashScreen splashScreen)
         {
@@ -60,7 +58,7 @@ namespace CoolFishNS
 
         private void SaveControlSettings()
         {
-            foreach (CheckBox script in _pluginCheckBoxesList)
+            foreach (var script in _pluginCheckBoxesList)
             {
                 UserPreferences.Default.Plugins[script.Content.ToString()] = new SerializablePlugin
                 {
@@ -77,7 +75,7 @@ namespace CoolFishNS
 
             _processes = BotManager.GetWowProcesses();
 
-            foreach (Process process in _processes)
+            foreach (var process in _processes)
             {
                 try
                 {
@@ -92,7 +90,8 @@ namespace CoolFishNS
 
         private void OnCloseWindow(object sender, MouseButtonEventArgs e)
         {
-            _manager.SendAnalyticsEvent((DateTime.Now - Utilities.Utilities.StartTime).TotalMilliseconds, "ApplicationClose");
+            _manager.SendAnalyticsEvent((DateTime.Now - Utilities.Utilities.StartTime).TotalMilliseconds,
+                "ApplicationClose");
             Application.Current.Shutdown();
         }
 
@@ -124,7 +123,7 @@ namespace CoolFishNS
         {
             try
             {
-                int ordinal = LogLevelCMB.SelectedIndex == -1 ? 2 : LogLevelCMB.SelectedIndex;
+                var ordinal = LogLevelCMB.SelectedIndex == -1 ? 2 : LogLevelCMB.SelectedIndex;
                 Utilities.Utilities.Reconfigure(ordinal);
             }
             catch (Exception ex)
@@ -144,57 +143,58 @@ namespace CoolFishNS
         {
             await Task.Run(() =>
             {
-                Logger.Info(Environment.NewLine + Utilities.Utilities.GetNews() + Environment.NewLine);
-                Logger.Info("CoolFish Version: " + Constants.Version.Value);
-                BotManager.StartUp();
-                _manager.SendAnalyticsEvent(0, "ApplicationStart");
-                Updater.Update();
-                AutoSelectBot();
-                Process[] procs = BotManager.GetWowProcesses();
-                if (procs.Length == 1)
-                {
-                    BotManager.AttachToProcess(procs.First());
-                }
+                const string endMessage =
+                    "\nHey All, \n\n This is a message to let you know this is the end of CoolFish. If you are reading this, then it means that this version of CoolFish does not work and I do not intend on updating it. As of the time of this writing, I'm planning on working on something new. It might be a fish bot or something else depending on what I decide. It will likely be a bot or plugin within another framework that someone else builds. \n\n You can keep track of what I am up to by checking my twitter: https://twitter.com/TheUnknownDev \n\n If you are looking for alternative fish bots you can check ownedcore.com or honorbuddy.com";
+                Logger.Fatal(endMessage);
+                MessageBox.Show(endMessage);
             });
         }
 
-        private void AutoSelectBot()
+        private void Hide_BTN_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0)
             {
-                BotBaseCB_DropDownOpened(null, null);
-                if (BotManager.LoadedBots.Any())
+                var window = _processes[ProcessCB.SelectedIndex].MainWindowHandle;
+                NativeImports.HideWindow(window);
+            }
+            else
+            {
+                Logger.Warn("Please pick a process to hide");
+            }
+        }
+
+        private void Show_BTN_Click(object sender, RoutedEventArgs e)
+        {
+            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0)
+            {
+                var window = _processes[ProcessCB.SelectedIndex].MainWindowHandle;
+                if (window == IntPtr.Zero)
                 {
-                    BotBaseCB.SelectedIndex = 0;
-                    BotBaseCB_DropDownClosed(null, null);
+                    var windows = NativeImports.GetProcessWindows(_processes[ProcessCB.SelectedIndex].Id);
+                    foreach (var ptr in windows)
+                    {
+                        NativeImports.ShowWindow(ptr);
+                    }
                 }
-            });
+                else
+                {
+                    NativeImports.ShowWindow(window);
+                }
+            }
+            else
+            {
+                Logger.Warn("Please pick a process to show");
+            }
         }
 
         #region EventHandlers
 
         private void btn_Attach_Click(object sender, EventArgs e)
         {
-            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0) // return if we have an invalid process
-            {
-                BotManager.AttachToProcess(_processes[ProcessCB.SelectedIndex]);
-            }
-            else
-            {
-                Logger.Warn("Please pick a process to attach to.");
-            }
         }
 
         private void ComboBox_DropDownOpened_1(object sender, EventArgs e)
         {
-            try
-            {
-                RefreshProcesses();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Error refreshing processes", ex);
-            }
         }
 
 
@@ -205,21 +205,10 @@ namespace CoolFishNS
 
         private void StartBTN_Click(object sender, RoutedEventArgs e)
         {
-            SaveControlSettings();
-            if (BotBaseCB.SelectedIndex > -1)
-            {
-                BotManager.StartActiveBot();
-            }
-            else
-            {
-                Logger.Info("Please select a bot from the drop down");
-            }
-
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            BotManager.StopActiveBot();
         }
 
         private void HelpBTN_Click(object sender, RoutedEventArgs e)
@@ -266,9 +255,13 @@ namespace CoolFishNS
 
         private void MetroWindow_Loaded_1(object sender, RoutedEventArgs e)
         {
-            var textbox = new TextBoxTarget(OutputText) {Layout = @"[${date:format=h\:mm\:ss.ff tt}] [${level:uppercase=true}] ${message}"};
+            var textbox = new TextBoxTarget(OutputText)
+            {
+                Layout = @"[${date:format=h\:mm\:ss.ff tt}] [${level:uppercase=true}] ${message}"
+            };
             var asyncWrapper = new AsyncTargetWrapper(textbox);
-            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.FromOrdinal(UserPreferences.Default.LogLevel), asyncWrapper));
+            LogManager.Configuration.LoggingRules.Add(new LoggingRule("*",
+                LogLevel.FromOrdinal(UserPreferences.Default.LogLevel), asyncWrapper));
             LogManager.ReconfigExistingLoggers();
         }
 
@@ -288,13 +281,13 @@ namespace CoolFishNS
 
         private void ConfigBTN_Click(object sender, RoutedEventArgs e)
         {
-            object item = ScriptsLB.SelectedItem;
+            var item = ScriptsLB.SelectedItem;
 
             if (item != null)
             {
                 var cb = (CheckBox) item;
 
-                PluginContainer plugin = PluginManager.Plugins.ContainsKey(cb.Content.ToString())
+                var plugin = PluginManager.Plugins.ContainsKey(cb.Content.ToString())
                     ? PluginManager.Plugins[cb.Content.ToString()]
                     : null;
 
@@ -314,12 +307,12 @@ namespace CoolFishNS
 
         private void ScriptsLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            object value = ScriptsLB.SelectedItem;
+            var value = ScriptsLB.SelectedItem;
 
             if (value != null)
             {
                 var cb = (CheckBox) value;
-                IPlugin p = PluginManager.Plugins[cb.Content.ToString()].Plugin;
+                var p = PluginManager.Plugins[cb.Content.ToString()].Plugin;
 
                 DescriptionBox.Text = p.Description;
                 AuthorTB.Text = "Author: " + p.Author;
@@ -329,68 +322,16 @@ namespace CoolFishNS
 
         private void btn_Settings_Click(object sender, RoutedEventArgs e)
         {
-            BotManager.Settings();
         }
 
         private void BotBaseCB_DropDownOpened(object sender, EventArgs e)
         {
-            BotBaseCB.Items.Clear();
-            _bots.Clear();
-            foreach (var pair in BotManager.LoadedBots)
-            {
-                BotBaseCB.Items.Add(pair.Value.Name + " (" + pair.Value.Version + ") by " +
-                                    pair.Value.Author);
-                _bots.Add(pair.Value);
-            }
         }
 
         private void BotBaseCB_DropDownClosed(object sender, EventArgs e)
         {
-            if (BotBaseCB.SelectedIndex < _bots.Count && BotBaseCB.SelectedIndex >= 0)
-            {
-                BotManager.SetActiveBot(_bots[BotBaseCB.SelectedIndex]); 
-            }
-            
         }
 
         #endregion
-
-        private void Hide_BTN_Click(object sender, RoutedEventArgs e)
-        {
-            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0)
-            {
-                var window = _processes[ProcessCB.SelectedIndex].MainWindowHandle;
-                NativeImports.HideWindow(window);
-            }
-            else
-            {
-                Logger.Warn("Please pick a process to hide");
-            }
-        }
-
-        private void Show_BTN_Click(object sender, RoutedEventArgs e)
-        {
-            if (_processes.Length > ProcessCB.SelectedIndex && ProcessCB.SelectedIndex >= 0)
-            {
-                var window = _processes[ProcessCB.SelectedIndex].MainWindowHandle;
-                if (window == IntPtr.Zero)
-                {
-                    var windows = NativeImports.GetProcessWindows(_processes[ProcessCB.SelectedIndex].Id);
-                    foreach (var ptr in windows)
-                    {
-                        NativeImports.ShowWindow(ptr);
-                    }
-                }
-                else
-                {
-                    NativeImports.ShowWindow(window);
-                }
-
-            }
-            else
-            {
-                Logger.Warn("Please pick a process to show");
-            }
-        }
     }
 }
