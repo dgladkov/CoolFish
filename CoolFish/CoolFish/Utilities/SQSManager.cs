@@ -10,13 +10,6 @@ namespace CoolFishNS.Utilities
 {
     internal class SQSManager
     {
-        private readonly AmazonSQSClient _client;
-
-        internal SQSManager()
-        {
-
-        }
-
         internal void SendAnalyticsPayload(AnalyticsPayload analyticspayload)
         {
 

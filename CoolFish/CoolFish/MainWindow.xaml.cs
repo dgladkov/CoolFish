@@ -144,7 +144,7 @@ namespace CoolFishNS
             await Task.Run(() =>
             {
                 const string endMessage =
-                    "\nHey All, \n\n This is a message to let you know this is the end of CoolFish. If you are reading this, then it means that this version of CoolFish does not work and I do not intend on updating it. As of the time of this writing, I'm planning on working on something new. It might be a fish bot or something else depending on what I decide. It will likely be a bot or plugin within another framework that someone else builds. \n\n You can keep track of what I am up to by checking my twitter: https://twitter.com/TheUnknownDev \n\n If you are looking for alternative fish bots you can check ownedcore.com or honorbuddy.com";
+                    "\nHey All, \n\n This is a message to let you know this is the end of CoolFish. If you are reading this, then it means that this version of CoolFish does not work and I do not intend on updating it. As of the time of this writing, I'm planning on working on something new. It might be a fish bot or something else depending on what I decide. It will likely be a bot or plugin within another framework that someone else builds. \n\n You can keep track of what I am up to by checking my twitter: https://twitter.com/TheUnknownDev \n\n If you are looking for alternative fish bots you can check ownedcore.com in the bots section.";
                 Logger.Fatal(endMessage);
                 MessageBox.Show(endMessage);
             });
